@@ -14,8 +14,9 @@
     },
     "removed": [],
     "discord": {
-      "posted": false,
-      "messageId": null
+      "posted": true,
+      "messageId": "1565561760214294693",
+      "postedAt": "2026-10-30T03:03:30+00:00"
     }
   },
   "mods": [
