@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+    inputs:
+      test_token_alert:
+        description: "Also open a test token-expiry issue (to check the alert email)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -153,6 +158,9 @@ jobs:
           git diff --cached --quiet || { git commit -q -m "Keepalive: weekly check-in ($STATUS)" && push; }
 
       - name: Claude token expiry
+        env:
+          TEST: ${{ inputs.test_token_alert }}
+          SETTINGS_URL: ${{ github.server_url }}/${{ github.repository }}/settings/secrets/actions
         run: |
           if [ -z "$CLAUDE_TOKEN_EXPIRES" ]; then
             echo "::warning::Secret CLAUDE_CODE_OAUTH_TOKEN_EXPIRES isn't set, so token expiry isn't tracked"
@@ -164,15 +172,39 @@ jobs:
           fi
           days=$(( ( expires - $(date -u +%s) ) / 86400 ))
           echo "Claude token expires in $days days"   # the date itself is a secret, so logs show it as ***
-          [ "$days" -gt "$CLAUDE_TOKEN_WARN_DAYS" ] && exit 0
-          title="Renew the Claude token for patch notes (expires $CLAUDE_TOKEN_EXPIRES)"
-          gh issue list --state open --limit 100 --json title --jq '.[].title' | grep -Fxq "$title" && exit 0
-          gh issue create --title "$title" --body "The \`CLAUDE_CODE_OAUTH_TOKEN\` secret expires on **$CLAUDE_TOKEN_EXPIRES** ($days days). After that, patch notes still post, but with simple automatic highlights instead of Claude's.
 
-          To renew:
-          1. On your computer, run \`claude setup-token\` and copy the token it prints.
-          2. In this repo, go to Settings → Secrets and variables → Actions, edit \`CLAUDE_CODE_OAUTH_TOKEN\` and paste the new token.
-          3. On the same page, update \`CLAUDE_CODE_OAUTH_TOKEN_EXPIRES\` to the new expiry date (a year from today, YYYY-MM-DD).
+          title="Renew the Claude token for patch notes (expires $CLAUDE_TOKEN_EXPIRES)"
+          if [ "$TEST" = true ]; then
+            title="[Test] $title"
+          elif [ "$days" -gt "$CLAUDE_TOKEN_WARN_DAYS" ]; then
+            exit 0
+          fi
+          gh issue list --state open --limit 100 --json title --jq '.[].title' | grep -Fxq "$title" && exit 0
+
+          when="in **$days days**"; [ "$days" -lt 0 ] && when="**already expired** ($(( -days )) days ago)"
+          example=$(date -u -d "+1 year" +%Y-%m-%d)
+          {
+            [ "$TEST" = true ] && printf '> [!NOTE]\n> This is a test of the expiry alert. Nothing needs doing; close it.\n\n'
+            cat <<EOF
+          ## ⏳ The Claude token expires $when, on $CLAUDE_TOKEN_EXPIRES
+
+          After that, patch notes still post to Discord, but with simple automatic highlights instead of Claude's.
+
+          ### Renew it
+
+          1. On your computer, run \`claude setup-token\` and copy the token it prints (it starts with \`sk-ant-oat01-\`).
+          2. Open [Settings → Secrets and variables → Actions]($SETTINGS_URL). Edit **\`CLAUDE_CODE_OAUTH_TOKEN\`** and paste the new token.
+          3. **Update the expiry date as well.** Edit **\`CLAUDE_CODE_OAUTH_TOKEN_EXPIRES\`** and set it to the new token's expiry date, one year after you created it. If you renew today, that's:
+
+             \`\`\`
+             $example
+             \`\`\`
+
+             > [!IMPORTANT]
+             > The format must be exactly **\`YYYY-MM-DD\`**: four-digit year, two-digit month, two-digit day, separated by hyphens. Nothing else in the box. If the date can't be read, expiry stops being tracked (each run's log shows a warning).
           4. Close this issue.
 
-          @$OWNER · [workflow run]($RUN_URL)"
+          @$OWNER · [workflow run]($RUN_URL)
+          EOF
+          } > .patchnotes/issue.md
+          gh issue create --title "$title" --body-file .patchnotes/issue.md
