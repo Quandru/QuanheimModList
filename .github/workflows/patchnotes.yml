@@ -9,10 +9,18 @@ on:
 
 permissions:
   contents: write
+  issues: write     # alerts are opened as issues, which GitHub emails to the repo owner
 
 concurrency:
   group: patchnotes
   cancel-in-progress: false
+
+env:
+  # When the CLAUDE_CODE_OAUTH_TOKEN secret stops working. After renewing it (claude setup-token),
+  # update the secret and move this date on by a year.
+  CLAUDE_TOKEN_EXPIRES: "2027-10-30"
+  # Days before expiry to start warning.
+  CLAUDE_TOKEN_WARN_DAYS: "30"
 
 jobs:
   patchnotes:
@@ -20,6 +28,8 @@ jobs:
     timeout-minutes: 20
     env:
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      GH_TOKEN: ${{ github.token }}
+      OWNER: ${{ github.repository_owner }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,7 +42,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p .patchnotes
 
-          python3 tools/patchnotes.py check --record | tee .patchnotes/check.json
+          # a Gale/Thunderstore outage is a warning, not a failed run: the next run retries
+          if ! python3 tools/patchnotes.py check --record > .patchnotes/check.json; then
+            echo "::warning::Couldn't reach the Gale profile; will retry next run"
+            echo "status=error" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          cat .patchnotes/check.json
           status=$(python3 -c 'import json; print(json.load(open(".patchnotes/check.json"))["status"])')
           echo "status=$status" >> "$GITHUB_OUTPUT"
 
@@ -40,7 +55,11 @@ jobs:
             mods-changed|no-baseline)
               args=""
               [ "$status" = no-baseline ] && args="--backfill-days 3"
-              python3 tools/patchnotes.py prepare $args > .patchnotes/prepare.json
+              if ! python3 tools/patchnotes.py prepare $args > .patchnotes/prepare.json; then
+                echo "::warning::prepare failed (a mod site may be down); will retry next run"
+                git checkout -- . && git clean -fdq -e .patchnotes
+                exit 0
+              fi
               cat .patchnotes/prepare.json
               file=$(python3 -c 'import json; print(json.load(open(".patchnotes/prepare.json")).get("patchFile") or "")')
               if [ -n "$file" ]; then
@@ -49,11 +68,12 @@ jobs:
               fi
               ;;
             config-only)
-              python3 tools/patchnotes.py prepare
+              python3 tools/patchnotes.py prepare > /dev/null || { git checkout -- .; echo "::warning::prepare failed; will retry"; }
               ;;
           esac
 
       - name: Write highlights with Claude
+        id: claude
         if: steps.prep.outputs.file != ''
         continue-on-error: true   # if this fails, simple highlights are filled in below
         timeout-minutes: 10
@@ -78,6 +98,7 @@ jobs:
         env:
           STATUS: ${{ steps.prep.outputs.status }}
           FILE: ${{ steps.prep.outputs.file }}
+          CLAUDE_OUTCOME: ${{ steps.claude.outcome }}
           VALHEIM_PATCH_DISCORD_WEBHOOK_URL: ${{ secrets.VALHEIM_PATCH_DISCORD_WEBHOOK_URL }}
           VALHEIM_PATCH_DISCORD_GROUP_TAG: ${{ secrets.VALHEIM_PATCH_DISCORD_GROUP_TAG }}
         run: |
@@ -88,9 +109,15 @@ jobs:
             done
             return 1
           }
-          commit() {   # commit whatever changed, if anything
+          commit() {   # commit whatever changed, if anything. Any commit also resets the keepalive clock.
             git add -A
-            git diff --cached --quiet || { git commit -q -m "$1" && push; }
+            git diff --cached --quiet && return 0
+            mkdir -p status && cp .patchnotes/last-check.json status/last-check.json && git add status
+            git commit -q -m "$1" && push
+          }
+          alert() {    # open an issue (GitHub emails it), unless one with the same title is already open
+            gh issue list --state open --limit 100 --json title --jq '.[].title' | grep -Fxq "$1" && return 0
+            gh issue create --title "$1" --body "$2"$'\n\n'"@$OWNER · [workflow run]($RUN_URL)"
           }
 
           if [ -n "$FILE" ]; then
@@ -98,6 +125,11 @@ jobs:
             python3 tools/patchnotes.py highlights --original .patchnotes/original.md
             n=$(python3 -c 'import json; print(json.load(open(".patchnotes/prepare.json"))["changes"])')
             commit "Patch notes $(basename "$FILE" .md): $n mod changes"
+            if [ "$CLAUDE_OUTCOME" = failure ]; then
+              alert "Claude couldn't write the patch note highlights" \
+                "The latest patch ($FILE) went out with simple, automatic highlights because the Claude step failed.
+          The usual cause is an expired or revoked \`CLAUDE_CODE_OAUTH_TOKEN\`. To renew it, run \`claude setup-token\` on your computer, then update the secret under Settings → Secrets and variables → Actions. Check the workflow run log for the exact error. Close this issue once it's fixed."
+            fi
           elif [ "$STATUS" = config-only ]; then
             commit "Profile synced: no mod changes"
           fi
@@ -111,7 +143,28 @@ jobs:
               commit "Record Discord post"
             else
               echo "::warning::Discord post failed; the next run will retry"
+              alert "Discord post failed" \
+                "The latest patch couldn't be posted to Discord. Every run retries it, and this issue stays open until you close it. If the webhook was deleted or changed, update \`VALHEIM_PATCH_DISCORD_WEBHOOK_URL\` under Settings → Secrets and variables → Actions."
             fi
           fi
 
-          commit "Last check: $STATUS"   # heartbeat (status/last-check.json), when due
+          # keepalive: written by check --record only if nothing has been committed for a week
+          git add -A
+          git diff --cached --quiet || { git commit -q -m "Keepalive: weekly check-in ($STATUS)" && push; }
+
+      - name: Claude token expiry
+        run: |
+          days=$(( ( $(date -ud "$CLAUDE_TOKEN_EXPIRES" +%s) - $(date -u +%s) ) / 86400 ))
+          echo "Claude token expires $CLAUDE_TOKEN_EXPIRES ($days days)"
+          [ "$days" -gt "$CLAUDE_TOKEN_WARN_DAYS" ] && exit 0
+          title="Renew the Claude token for patch notes (expires $CLAUDE_TOKEN_EXPIRES)"
+          gh issue list --state open --limit 100 --json title --jq '.[].title' | grep -Fxq "$title" && exit 0
+          gh issue create --title "$title" --body "The \`CLAUDE_CODE_OAUTH_TOKEN\` secret expires on **$CLAUDE_TOKEN_EXPIRES** ($days days). After that, patch notes still post, but with simple automatic highlights instead of Claude's.
+
+          To renew:
+          1. On your computer, run \`claude setup-token\` and copy the token it prints.
+          2. In this repo, go to Settings → Secrets and variables → Actions, edit \`CLAUDE_CODE_OAUTH_TOKEN\` and paste the new token.
+          3. In \`.github/workflows/patchnotes.yml\`, set \`CLAUDE_TOKEN_EXPIRES\` to the new expiry date (a year from today).
+          4. Close this issue.
+
+          @$OWNER · [workflow run]($RUN_URL)"

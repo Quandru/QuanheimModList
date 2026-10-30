@@ -36,9 +36,10 @@ FRAMEWORKS = {"denikson-BepInExPack_Valheim", "ValheimModding-Jotunn"}
 ROOT = os.getcwd()
 STATE = os.path.join(ROOT, "modlist.json")
 LAST_CHECK = os.path.join(ROOT, "status", "last-check.json")
-# How often an unchanged check is written back to the repo. It doubles as the keepalive that stops
-# GitHub disabling the schedule after 60 days without commits.
-HEARTBEAT_MINUTES = float(os.environ.get("PATCHNOTES_HEARTBEAT_MINUTES", "1440"))
+WORK_DIR = os.path.join(ROOT, ".patchnotes")      # scratch, git-ignored
+# Keepalive: GitHub pauses scheduled workflows after 60 days without commits. If nothing else has been committed
+# for this long, a run commits status/last-check.json. Every other commit refreshes it too (see the workflow).
+HEARTBEAT_MINUTES = float(os.environ.get("PATCHNOTES_HEARTBEAT_MINUTES", str(7 * 24 * 60)))
 NOTES_DIR = os.path.join(ROOT, "patchnotes")
 HL_START, HL_END = "<!-- highlights:start -->", "<!-- highlights:end -->"
 HL_PLACEHOLDER = "_Highlights pending._"
@@ -381,22 +382,24 @@ def render_markdown(changes, profile_updated, prev_updated, total_mods):
 
 # ---------------------------------------------------------------- commands
 def record_check(status, meta):
-    """Write status/last-check.json when the status changed or the heartbeat is due."""
+    """Write this check to .patchnotes/last-check.json (scratch). Also write it to status/last-check.json
+    when the keepalive is due, i.e. nothing has refreshed that file for HEARTBEAT_MINUTES."""
     now = dt.datetime.now(dt.timezone.utc)
+    body = json.dumps({"checkedAt": now.isoformat(timespec="seconds"), "status": status,
+                       "profileUpdatedAt": meta["updatedAt"], "mods": len(meta["manifest"]["mods"]),
+                       "runUrl": os.environ.get("RUN_URL")}, indent=2) + "\n"
+    os.makedirs(WORK_DIR, exist_ok=True)
+    with open(os.path.join(WORK_DIR, "last-check.json"), "w") as f:
+        f.write(body)
     prev = {}
     if os.path.exists(LAST_CHECK):
         with open(LAST_CHECK) as f:
             prev = json.load(f)
-    due = (not prev or prev.get("status") != status or
-           (now - parse_time(prev["checkedAt"])).total_seconds() >= HEARTBEAT_MINUTES * 60)
-    if not due:
+    if prev and (now - parse_time(prev["checkedAt"])).total_seconds() < HEARTBEAT_MINUTES * 60:
         return False
     os.makedirs(os.path.dirname(LAST_CHECK), exist_ok=True)
     with open(LAST_CHECK, "w") as f:
-        json.dump({"checkedAt": now.isoformat(timespec="seconds"), "status": status,
-                   "profileUpdatedAt": meta["updatedAt"], "mods": len(meta["manifest"]["mods"]),
-                   "runUrl": os.environ.get("RUN_URL")}, f, indent=2)
-        f.write("\n")
+        f.write(body)
     return True
 
 def cmd_check(args):
@@ -621,7 +624,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("check"); p.set_defaults(fn=cmd_check)
-    p.add_argument("--record", action="store_true", help="write status/last-check.json when due")
+    p.add_argument("--record", action="store_true", help="record this check; keepalive when due")
     p = sub.add_parser("highlights"); p.set_defaults(fn=cmd_highlights)
     p.add_argument("--original", required=True, help="copy of the patch note from before the AI edit")
     p = sub.add_parser("prepare"); p.set_defaults(fn=cmd_prepare)

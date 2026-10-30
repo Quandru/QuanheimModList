@@ -27,9 +27,14 @@ with patch notes for every change.
 A GitHub Action ([`.github/workflows/patchnotes.yml`](.github/workflows/patchnotes.yml)) runs every 5 minutes.
 Most runs only check the profile and stop. When mods change, it prepares the patch note, runs Claude Code
 (signed in with a Claude subscription token) to write the highlights, pushes, and posts to Discord. If Claude
-can't run, simple highlights are filled in so the patch still goes out. Once a day, or whenever the status
-changes, it writes [`status/last-check.json`](status/last-check.json). That also stops GitHub pausing the schedule
-after 60 days without commits.
+can't run, simple highlights are filled in so the patch still goes out.
+
+Every commit the Action makes refreshes [`status/last-check.json`](status/last-check.json). If a week passes
+without one, it commits that file on its own, so GitHub never pauses the schedule (it does after 60 days without
+commits).
+
+Problems are raised as GitHub issues, which GitHub emails to the repo owner: Claude failing to write highlights,
+a failed Discord post, and the Claude token nearing expiry (30 days before `CLAUDE_TOKEN_EXPIRES` in the workflow).
 
 Repository secrets (Settings → Secrets and variables → Actions):
 
