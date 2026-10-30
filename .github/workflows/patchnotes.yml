@@ -206,8 +206,7 @@ jobs:
              $example
              \`\`\`
 
-             > [!IMPORTANT]
-             > The format must be exactly **\`YYYY-MM-DD\`**: four-digit year, two-digit month, two-digit day, separated by hyphens. Nothing else in the box. If the date can't be read, expiry stops being tracked (each run's log shows a warning).
+             ⚠️ **The format must be exactly \`YYYY-MM-DD\`**: four-digit year, two-digit month, two-digit day, separated by hyphens. Nothing else in the box. If the date can't be read, expiry stops being tracked (each run's log shows a warning).
           4. Close this issue.
 
           @$OWNER · [workflow run]($RUN_URL)
