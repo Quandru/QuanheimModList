@@ -24,6 +24,11 @@ API = {"thunderstore": "https://thunderstore.io/api/experimental/package",
 PAGE = {"thunderstore": "https://thunderstore.io/c/valheim/p/{ns}/{name}/",
         "hexium": "https://valheim.hexium.gg/mods/{ns}/{name}"}
 SOURCE_LABEL = {"thunderstore": "Thunderstore", "hexium": "Hexium"}
+CHANGELOG_PAGE = {"thunderstore": "https://thunderstore.io/c/valheim/p/{ns}/{name}/changelog/",
+                  "hexium": "https://valheim.hexium.gg/mods/{ns}/{name}"}
+# Modding frameworks: their changelogs are long and technical. They appear in the table and the Discord
+# summary, but the patch note links to the changelog instead of quoting it.
+FRAMEWORKS = {"denikson-BepInExPack_Valheim", "ValheimModding-Jotunn"}
 
 ROOT = os.getcwd()
 STATE = os.path.join(ROOT, "modlist.json")
@@ -334,10 +339,16 @@ def render_markdown(changes, profile_updated, prev_updated, total_mods):
         meta = [f"by **{ns}**"]
         if c.get("url"):
             meta.append(f'[{SOURCE_LABEL.get(c["source"], "page")}]({c["url"]})')
+        is_fw = c["name"] in FRAMEWORKS
         if c.get("released"):
             meta.append("released " + fmt_date(c["released"])[0])
         out += ["", "<sub>" + " · ".join(meta) + "</sub>", ""]
-        if c["change"] == "updated":
+        if c["change"] == "updated" and is_fw:
+            ns_, n_ = split_name(c["name"])
+            log = CHANGELOG_PAGE.get(c.get("source"), "{ns}").format(ns=ns_, name=n_)
+            out.append(f"_Modding framework update. Its notes are long and technical, so they aren't copied here: "
+                       f"[read the changelog]({log})._")
+        elif c["change"] == "updated":
             notes = c.get("notes") or []
             if not notes:
                 out.append("_The author didn't publish patch notes for this version._")
@@ -439,9 +450,14 @@ def cmd_prepare(args):
             "discord": {"posted": False, "messageId": None},
         }
         result.update(status="patch-written", patchFile=rel)
-        result["mods"] = [{"name": c["name"], "change": c["change"], "from": c["from"], "to": c["to"],
-                           "notesFrom": c.get("notesFrom"), "notesVersions": [v for v, _ in c.get("notes") or []]}
-                          for c in changes]
+        result["mods"] = []
+        for c in changes:
+            m = {"name": c["name"], "change": c["change"], "from": c["from"], "to": c["to"],
+                 "notesFrom": c.get("notesFrom"), "notesVersions": [v for v, _ in c.get("notes") or []]}
+            if c["name"] in FRAMEWORKS and c.get("notes"):   # not in the patch file; for the highlights only
+                m["framework"] = True
+                m["notes"] = "\n\n".join(f"[{v}]\n{t}" for v, t in c["notes"])[:4000]
+            result["mods"].append(m)
     save_state(new_state)
     print(json.dumps(result, indent=1))
 
@@ -456,6 +472,10 @@ def _chunks(lines, limit=1024):
     if buf:
         yield buf
 
+FIELD_ICON = {"updated": "⬆️", "added": "✨", "removed": "🗑️", "downgraded": "⏪", "enabled": "✅",
+              "disabled": "⏸️", "source-changed": "🔀"}
+FIELD_BULLET = {"added": "✨", "enabled": "✅", "disabled": "⏸️"}
+
 def build_payload(state):
     lp = state["lastPatch"]
     with open(os.path.join(ROOT, lp["file"])) as f:
@@ -465,7 +485,7 @@ def build_payload(state):
     url = f"{REPO_URL}/blob/{BRANCH}/{lp['file']}"
     if len(hl) > 3800:
         hl = hl[:3800].rsplit("\n", 1)[0] + "\n…"
-    desc = hl + f"\n\n**[Read the full patch notes →]({url})**"
+    desc = hl
     by_kind = {}
     for m in state["mods"]:
         if m.get("lastPatch"):
@@ -473,17 +493,21 @@ def build_payload(state):
     fields = []
     for kind in ORDER:
         if kind == "removed":
-            items = [f'**{pretty(r["name"])}** (was `{r["version"]}`)' for r in lp.get("removed", [])]
+            items = [f'❌ **{pretty(r["name"])}** · was `{r["version"]}`' for r in lp.get("removed", [])]
         else:
             items = []
             for m in sorted(by_kind.get(kind, []), key=lambda m: pretty(m["name"]).lower()):
                 p = m["lastPatch"]
-                ver = f'`{p["from"] or "?"}` → `{p["to"]}`' if kind in ("updated", "downgraded") else f'`{p["to"]}`'
-                items.append(f'[{pretty(m["name"])}]({m["url"]}) {ver}' if m.get("url") else f'{pretty(m["name"])} {ver}')
+                ver = f'`{p["from"] or "?"} → {p["to"]}`' if kind in ("updated", "downgraded") else f'`{p["to"]}`'
+                name = f'[{pretty(m["name"])}]({m["url"]})' if m.get("url") else pretty(m["name"])
+                items.append(f'{FIELD_BULLET.get(kind, "▸")} **{name}** · {ver}')
         for n, chunk in enumerate(_chunks(items)):
-            fields.append({"name": VERB[kind] + (" (cont.)" if n else ""), "value": chunk.strip(), "inline": False})
-    embed = {"title": title, "url": url, "description": desc, "color": 0xC8A04B,
-             "fields": fields[:25],
+            label = f'{FIELD_ICON.get(kind, "")} {VERB[kind]} ({len(items)})'.strip()
+            fields.append({"name": label + (" (cont.)" if n else ""), "value": chunk.strip(), "inline": False})
+    fields = fields[:24]
+    fields.append({"name": "\u200b", "value": f"### [📜 Read the full patch notes]({url})", "inline": False})
+    embed = {"title": "🛠️ " + title, "url": url, "description": desc, "color": 0xC8A04B,
+             "fields": fields,
              "footer": {"text": f"{len(state['mods'])} mods · Gale profile {PROFILE_CODE}"},
              "timestamp": lp["profileUpdatedAt"]}
     payload = {"username": WEBHOOK_NAME, "embeds": [embed], "allowed_mentions": {"parse": []}}

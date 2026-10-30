@@ -20,14 +20,26 @@ Commit straight to `main`. This repo only holds generated data.
    - `no-baseline`: first run. Run `python3 tools/patchnotes.py prepare --backfill-days 3` and continue.
 3. `prepare` prints the patch file path and a list of changes. Open the patch file.
 4. Write the highlights: replace `_Highlights pending._` between `<!-- highlights:start -->` and
-   `<!-- highlights:end -->`. Rules:
-   - 3–6 bullets, written for players: what they'll notice in game, not how the code changed.
-   - Each bullet: one emoji, a **bold headline of a few words**, then one or two plain sentences naming the mod.
-   - Most noticeable gameplay changes first. Group small fixes, library and dependency bumps into one closing bullet.
+   `<!-- highlights:end -->`. They become the Discord embed, so lay them out for easy reading:
+   - 3–6 highlights. Each one is a `### ` heading with one emoji and a short headline (2–5 words, no full stop),
+     then a blank line, then one or two plain sentences naming the mod. Leave a blank line between highlights.
+     Example:
+
+     ```
+     ### 🛣️ Build roads with the hoe
+
+     **MyDirtyHoe** adds a Terrain Road tool: click points along a route and it lays a smooth, evenly sloped road.
+     ```
+   - Bold the mod name the first time it appears in each highlight.
+   - Write for players: what they'll notice in game, not how the code changed.
+   - Most noticeable gameplay changes first. Group small fixes, library and framework bumps into one closing
+     highlight (e.g. `### 🔧 Fixes and framework updates`), using a short `- ` list if it covers several mods.
    - Mention every added or removed mod.
-   - Only state what the quoted notes say. No invented numbers or features. If a mod published no notes, say so
+   - Framework mods (BepInEx, Jotunn) don't have their notes quoted in the patch file. Use the `notes` that
+     `prepare` printed for them, and summarise in one short line what players would care about.
+   - Only state what the notes say. No invented numbers or features. If a mod published no notes, say so
      rather than guessing.
-   - Keep it under 1,500 characters. It becomes the Discord embed.
+   - Keep it under 2,000 characters.
    Don't edit the quoted notes below the highlights.
 5. `git add -A && git commit -m "Patch notes <date>: <n> mod changes" && git push origin main`.
    Push before posting, so the link in Discord already works.

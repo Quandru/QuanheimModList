@@ -8,7 +8,8 @@ with patch notes for every change.
   (`change`, `from`, `to`). Unchanged mods don't.
 - **[`patchnotes/`](patchnotes/):** one file per patch, named by the profile's sync time (`YYYY-MM-DD-HHMM.md`).
   Each starts with highlights and an at-a-glance table, followed by each mod's own patch notes quoted from its
-  changelog.
+  changelog. Modding frameworks (BepInEx, Jotunn) are summarised in the highlights and linked, not quoted:
+  their changelogs are long and technical.
 
 ## How it works
 
