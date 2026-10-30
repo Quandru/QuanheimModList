@@ -181,14 +181,20 @@ jobs:
           fi
           gh issue list --state open --limit 100 --json title --jq '.[].title' | grep -Fxq "$title" && exit 0
 
-          when="in **$days days**"; [ "$days" -lt 0 ] && when="**already expired** ($(( -days )) days ago)"
+          if [ "$days" -lt 0 ]; then
+            heading="The Claude token **expired $(( -days )) days ago**, on $CLAUDE_TOKEN_EXPIRES"
+            after="Until it's renewed, patch notes still post to Discord, but with simple automatic highlights instead of Claude's."
+          else
+            heading="The Claude token expires in **$days days**, on $CLAUDE_TOKEN_EXPIRES"
+            after="After that, patch notes still post to Discord, but with simple automatic highlights instead of Claude's."
+          fi
           example=$(date -u -d "+1 year" +%Y-%m-%d)
           {
             [ "$TEST" = true ] && printf '> [!NOTE]\n> This is a test of the expiry alert. Nothing needs doing; close it.\n\n'
             cat <<EOF
-          ## ⏳ The Claude token expires $when, on $CLAUDE_TOKEN_EXPIRES
+          ## ⏳ $heading
 
-          After that, patch notes still post to Discord, but with simple automatic highlights instead of Claude's.
+          $after
 
           ### Renew it
 
