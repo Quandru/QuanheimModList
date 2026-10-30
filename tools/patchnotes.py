@@ -485,7 +485,8 @@ def build_payload(state):
     url = f"{REPO_URL}/blob/{BRANCH}/{lp['file']}"
     if len(hl) > 3800:
         hl = hl[:3800].rsplit("\n", 1)[0] + "\n…"
-    desc = hl
+    # Discord trims trailing blank lines, so a zero-width space keeps the gap before the rule.
+    desc = hl + "\n\u200b\n" + "━" * 22
     by_kind = {}
     for m in state["mods"]:
         if m.get("lastPatch"):
@@ -505,7 +506,7 @@ def build_payload(state):
             label = f'{FIELD_ICON.get(kind, "")} {VERB[kind]} ({len(items)})'.strip()
             fields.append({"name": label + (" (cont.)" if n else ""), "value": chunk.strip(), "inline": False})
     fields = fields[:24]
-    fields.append({"name": "\u200b", "value": f"### [📜 Read the full patch notes]({url})", "inline": False})
+    fields.append({"name": "\u200b", "value": f"**[📜 Read the full patch notes →]({url})**", "inline": False})
     embed = {"title": "🛠️ " + title, "url": url, "description": desc, "color": 0xC8A04B,
              "fields": fields,
              "footer": {"text": f"{len(state['mods'])} mods · Gale profile {PROFILE_CODE}"},
