@@ -5,6 +5,9 @@ description: Check the Quanheim Gale sync profile for mod changes and, if there 
 
 # Quanheim patch notes
 
+The GitHub Action in `.github/workflows/patchnotes.yml` normally runs this every 5 minutes, and asks Claude only for
+step 4 (the highlights). These steps are for running it by hand.
+
 Everything runs from the repo root with `tools/patchnotes.py` (Python 3, standard library only).
 Commit straight to `main`. This repo only holds generated data.
 

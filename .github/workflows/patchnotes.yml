@@ -1,0 +1,117 @@
+name: Patch notes
+
+# Every 5 minutes: check the Gale profile. Most runs end there (a few seconds, no AI).
+# When mods change: write the patch note, let Claude write the highlights, push, post to Discord.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: patchnotes
+  cancel-in-progress: false
+
+jobs:
+  patchnotes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check and prepare
+        id: prep
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p .patchnotes
+
+          python3 tools/patchnotes.py check --record | tee .patchnotes/check.json
+          status=$(python3 -c 'import json; print(json.load(open(".patchnotes/check.json"))["status"])')
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+          case "$status" in
+            mods-changed|no-baseline)
+              args=""
+              [ "$status" = no-baseline ] && args="--backfill-days 3"
+              python3 tools/patchnotes.py prepare $args > .patchnotes/prepare.json
+              cat .patchnotes/prepare.json
+              file=$(python3 -c 'import json; print(json.load(open(".patchnotes/prepare.json")).get("patchFile") or "")')
+              if [ -n "$file" ]; then
+                cp "$file" .patchnotes/original.md
+                echo "file=$file" >> "$GITHUB_OUTPUT"
+              fi
+              ;;
+            config-only)
+              python3 tools/patchnotes.py prepare
+              ;;
+          esac
+
+      - name: Write highlights with Claude
+        if: steps.prep.outputs.file != ''
+        continue-on-error: true   # if this fails, simple highlights are filled in below
+        timeout-minutes: 10
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          FILE: ${{ steps.prep.outputs.file }}
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "::warning::CLAUDE_CODE_OAUTH_TOKEN secret not set; using simple highlights"
+            exit 1
+          fi
+          npm install -g --silent @anthropic-ai/claude-code
+          claude -p "Write the highlights for the Quanheim patch note at $FILE.
+          First read .claude/skills/quanheim-patchnotes/SKILL.md and follow its step 4 exactly.
+          Then read the patch note. The output of prepare is in .patchnotes/prepare.json: it includes the
+          notes for framework mods (BepInEx, Jotunn), which aren't quoted in the patch note.
+          Only replace _Highlights pending._ between the highlight markers. Don't change anything else in that
+          file, don't touch any other file and don't run commands. Reply with one line when done." \
+            --allowedTools "Read,Edit" --max-turns 25
+
+      - name: Commit, push and post
+        env:
+          STATUS: ${{ steps.prep.outputs.status }}
+          FILE: ${{ steps.prep.outputs.file }}
+          VALHEIM_PATCH_DISCORD_WEBHOOK_URL: ${{ secrets.VALHEIM_PATCH_DISCORD_WEBHOOK_URL }}
+          VALHEIM_PATCH_DISCORD_GROUP_TAG: ${{ secrets.VALHEIM_PATCH_DISCORD_GROUP_TAG }}
+        run: |
+          push() {
+            for i in 1 2 3; do
+              git push origin HEAD:main && return 0
+              sleep $((i * 5)); git pull --rebase origin main
+            done
+            return 1
+          }
+          commit() {   # commit whatever changed, if anything
+            git add -A
+            git diff --cached --quiet || { git commit -q -m "$1" && push; }
+          }
+
+          if [ -n "$FILE" ]; then
+            # keeps only the highlights from Claude's edit; fills in simple ones if it wrote none
+            python3 tools/patchnotes.py highlights --original .patchnotes/original.md
+            n=$(python3 -c 'import json; print(json.load(open(".patchnotes/prepare.json"))["changes"])')
+            commit "Patch notes $(basename "$FILE" .md): $n mod changes"
+          elif [ "$STATUS" = config-only ]; then
+            commit "Profile synced: no mod changes"
+          fi
+
+          # post anything committed but not yet on Discord (this run's patch, or a failed earlier post)
+          unposted=$(python3 -c 'import json; s=json.load(open("modlist.json")); lp=s.get("lastPatch") or {}; print("yes" if lp and not lp["discord"].get("posted") else "")')
+          if [ -n "$unposted" ]; then
+            if [ -z "$VALHEIM_PATCH_DISCORD_WEBHOOK_URL" ]; then
+              echo "::warning::VALHEIM_PATCH_DISCORD_WEBHOOK_URL secret not set; patch not posted"
+            elif python3 tools/patchnotes.py post; then
+              commit "Record Discord post"
+            else
+              echo "::warning::Discord post failed; the next run will retry"
+            fi
+          fi
+
+          commit "Last check: $STATUS"   # heartbeat (status/last-check.json), when due

@@ -22,6 +22,23 @@ with patch notes for every change.
 4. **Write:** update `modlist.json` and write the patch note. Claude writes the highlights.
 5. **Publish:** push to `main`, then post an embed to Discord with the highlights and a link to the full notes.
 
+## Automation
+
+A GitHub Action ([`.github/workflows/patchnotes.yml`](.github/workflows/patchnotes.yml)) runs every 5 minutes.
+Most runs only check the profile and stop. When mods change, it prepares the patch note, runs Claude Code
+(signed in with a Claude subscription token) to write the highlights, pushes, and posts to Discord. If Claude
+can't run, simple highlights are filled in so the patch still goes out. Once a day, or whenever the status
+changes, it writes [`status/last-check.json`](status/last-check.json). That also stops GitHub pausing the schedule
+after 60 days without commits.
+
+Repository secrets (Settings → Secrets and variables → Actions):
+
+| Secret | What it is |
+|---|---|
+| `CLAUDE_CODE_OAUTH_TOKEN` | From `claude setup-token`, run on your own machine. Uses your Claude subscription. |
+| `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` | The Discord webhook to post to. |
+| `VALHEIM_PATCH_DISCORD_GROUP_TAG` | Optional: the ID of the role to ping. |
+
 The steps live in [`.claude/skills/quanheim-patchnotes/SKILL.md`](.claude/skills/quanheim-patchnotes/SKILL.md).
 The mechanics live in [`tools/patchnotes.py`](tools/patchnotes.py).
 

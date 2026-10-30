@@ -6,6 +6,9 @@ Subcommands (run from the repo root):
   prepare [--backfill-days N]
                         Download the profile, work out the delta, fetch patch notes,
                         update modlist.json and write patchnotes/<date>.md.
+  highlights --original FILE
+                        After an AI edit: keep only the highlights block from the edited patch note (restore
+                        everything else from FILE). If no highlights were written, fill in simple ones.
   post [--dry-run]      Post the latest patch note to Discord
                         (env VALHEIM_PATCH_DISCORD_WEBHOOK_URL, role ping: VALHEIM_PATCH_DISCORD_GROUP_TAG).
 
@@ -32,6 +35,10 @@ FRAMEWORKS = {"denikson-BepInExPack_Valheim", "ValheimModding-Jotunn"}
 
 ROOT = os.getcwd()
 STATE = os.path.join(ROOT, "modlist.json")
+LAST_CHECK = os.path.join(ROOT, "status", "last-check.json")
+# How often an unchanged check is written back to the repo. It doubles as the keepalive that stops
+# GitHub disabling the schedule after 60 days without commits.
+HEARTBEAT_MINUTES = float(os.environ.get("PATCHNOTES_HEARTBEAT_MINUTES", "1440"))
 NOTES_DIR = os.path.join(ROOT, "patchnotes")
 HL_START, HL_END = "<!-- highlights:start -->", "<!-- highlights:end -->"
 HL_PLACEHOLDER = "_Highlights pending._"
@@ -373,7 +380,26 @@ def render_markdown(changes, profile_updated, prev_updated, total_mods):
 
 
 # ---------------------------------------------------------------- commands
-def cmd_check(_):
+def record_check(status, meta):
+    """Write status/last-check.json when the status changed or the heartbeat is due."""
+    now = dt.datetime.now(dt.timezone.utc)
+    prev = {}
+    if os.path.exists(LAST_CHECK):
+        with open(LAST_CHECK) as f:
+            prev = json.load(f)
+    due = (not prev or prev.get("status") != status or
+           (now - parse_time(prev["checkedAt"])).total_seconds() >= HEARTBEAT_MINUTES * 60)
+    if not due:
+        return False
+    os.makedirs(os.path.dirname(LAST_CHECK), exist_ok=True)
+    with open(LAST_CHECK, "w") as f:
+        json.dump({"checkedAt": now.isoformat(timespec="seconds"), "status": status,
+                   "profileUpdatedAt": meta["updatedAt"], "mods": len(meta["manifest"]["mods"]),
+                   "runUrl": os.environ.get("RUN_URL")}, f, indent=2)
+        f.write("\n")
+    return True
+
+def cmd_check(args):
     state = load_state()
     meta = fetch_meta()
     snap = snapshot(meta)
@@ -386,8 +412,11 @@ def cmd_check(_):
     else:
         old = {m["name"]: {"version": m["version"], "enabled": m["enabled"]} for m in state["mods"]}
         status = "mods-changed" if old != snap else "config-only"
-    print(json.dumps({"status": status, "profileUpdatedAt": meta["updatedAt"],
-                      "recordedUpdatedAt": state["profile"]["updatedAt"] if state else None}))
+    out = {"status": status, "profileUpdatedAt": meta["updatedAt"],
+           "recordedUpdatedAt": state["profile"]["updatedAt"] if state else None}
+    if args.record:
+        out["lastCheckWritten"] = record_check(status, meta)
+    print(json.dumps(out))
 
 def cmd_prepare(args):
     state = load_state()
@@ -461,6 +490,51 @@ def cmd_prepare(args):
     save_state(new_state)
     print(json.dumps(result, indent=1))
 
+
+def auto_highlights(state):
+    """Plain highlights built from the changes, used when no AI summary was written."""
+    lp = state["lastPatch"]
+    with open(os.path.join(ROOT, lp["file"])) as f:
+        md = f.read()
+    lines = ["### 📦 What changed", ""]
+    for m in sorted((m for m in state["mods"] if m.get("lastPatch")), key=lambda m: pretty(m["name"]).lower()):
+        p = m["lastPatch"]
+        line = f'- **{pretty(m["name"])}** {VERB[p["change"]].lower()}'
+        if p["change"] in ("updated", "downgraded"):
+            line += f' to {p["to"]}'
+            if m["name"] not in FRAMEWORKS:     # first line of its quoted notes, if any
+                sec = md.split(f'### {pretty(m["name"])} · ', 1)
+                if len(sec) > 1:
+                    body = sec[1].split("\n---\n", 1)[0].split("</sub>", 1)[-1]
+                    first = next((l.strip() for l in body.splitlines()
+                                  if l.strip() and not l.lstrip().startswith(("#", "_", "<", "|"))), "")
+                    first = re.sub(r"^[-*+]\s+|^\d+\.\s+", "", first)
+                    if first:
+                        line += ": " + (first if len(first) <= 160 else first[:157].rsplit(" ", 1)[0] + "…")
+        lines.append(line)
+    for r in lp.get("removed", []):
+        lines.append(f'- **{pretty(r["name"])}** removed')
+    lines += ["", "-# Summary generated automatically."]
+    return "\n".join(lines)
+
+def cmd_highlights(args):
+    state = load_state()
+    path = os.path.join(ROOT, state["lastPatch"]["file"])
+    with open(path) as f:
+        edited = f.read()
+    with open(args.original) as f:
+        original = f.read()
+    try:
+        block = edited.split(HL_START, 1)[1].split(HL_END, 1)[0].strip()
+    except IndexError:
+        block = ""
+    source = "ai"
+    if not block or HL_PLACEHOLDER in block:
+        block, source = auto_highlights(state), "auto"
+    head, rest = original.split(HL_START, 1)
+    with open(path, "w") as f:
+        f.write(head + HL_START + "\n" + block + "\n" + HL_END + rest.split(HL_END, 1)[1])
+    print(json.dumps({"highlights": source, "chars": len(block)}))
 
 def _chunks(lines, limit=1024):
     buf = ""
@@ -546,7 +620,10 @@ def cmd_post(args):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("check").set_defaults(fn=cmd_check)
+    p = sub.add_parser("check"); p.set_defaults(fn=cmd_check)
+    p.add_argument("--record", action="store_true", help="write status/last-check.json when due")
+    p = sub.add_parser("highlights"); p.set_defaults(fn=cmd_highlights)
+    p.add_argument("--original", required=True, help="copy of the patch note from before the AI edit")
     p = sub.add_parser("prepare"); p.set_defaults(fn=cmd_prepare)
     p.add_argument("--backfill-days", type=float, default=0,
                    help="first run only: treat versions released in the last N days as this patch")
