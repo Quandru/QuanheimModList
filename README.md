@@ -34,7 +34,7 @@ without one, it commits that file on its own, so GitHub never pauses the schedul
 commits).
 
 Problems are raised as GitHub issues, which GitHub emails to the repo owner: Claude failing to write highlights,
-a failed Discord post, and the Claude token nearing expiry (30 days before the `CLAUDE_TOKEN_EXPIRES` variable).
+a failed Discord post, and the Claude token nearing expiry (30 days before `CLAUDE_CODE_OAUTH_TOKEN_EXPIRES`).
 
 Repository secrets (Settings → Secrets and variables → Actions):
 
@@ -42,9 +42,8 @@ Repository secrets (Settings → Secrets and variables → Actions):
 |---|---|
 | `CLAUDE_CODE_OAUTH_TOKEN` | From `claude setup-token`, run on your own machine. Uses your Claude subscription. |
 | `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` | The Discord webhook to post to. |
+| `CLAUDE_CODE_OAUTH_TOKEN_EXPIRES` | When that token expires, as `YYYY-MM-DD`. Update it with the token. |
 | `VALHEIM_PATCH_DISCORD_GROUP_TAG` | Optional: the ID of the role to ping. |
-
-Repository variable (same page, **Variables** tab): `CLAUDE_TOKEN_EXPIRES`, the token's expiry date as `YYYY-MM-DD`.
 
 The steps live in [`.claude/skills/quanheim-patchnotes/SKILL.md`](.claude/skills/quanheim-patchnotes/SKILL.md).
 The mechanics live in [`tools/patchnotes.py`](tools/patchnotes.py).
