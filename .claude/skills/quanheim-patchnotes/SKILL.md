@@ -31,9 +31,10 @@ Commit straight to `main`. This repo only holds generated data.
    Don't edit the quoted notes below the highlights.
 5. `git add -A && git commit -m "Patch notes <date>: <n> mod changes" && git push origin main`.
    Push before posting, so the link in Discord already works.
-6. `python3 tools/patchnotes.py post`. It reads `DISCORD_WEBHOOK_URL` (and `DISCORD_ROLE_ID`, if set, to ping that role) from the environment, and records the message ID
+6. `python3 tools/patchnotes.py post`. It reads `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` (and `VALHEIM_PATCH_DISCORD_GROUP_TAG`, if set, to ping that role)
+   from the environment; the older `DISCORD_WEBHOOK_URL` / `DISCORD_ROLE_ID` names also work. Never print their values. It records the message ID
    in `modlist.json`. Then commit `Record Discord post` and push.
-   - If `DISCORD_WEBHOOK_URL` isn't set or the post fails, leave it. The next run sees `unposted` and retries.
+   - If the webhook variable isn't set or the post fails, leave it. The next run sees `unposted` and retries.
      Say so in the reply.
    - Use `post --dry-run` to see the payload without sending it.
 

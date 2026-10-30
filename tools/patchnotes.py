@@ -6,7 +6,8 @@ Subcommands (run from the repo root):
   prepare [--backfill-days N]
                         Download the profile, work out the delta, fetch patch notes,
                         update modlist.json and write patchnotes/<date>.md.
-  post [--dry-run]      Post the latest patch note to Discord (env DISCORD_WEBHOOK_URL).
+  post [--dry-run]      Post the latest patch note to Discord
+                        (env VALHEIM_PATCH_DISCORD_WEBHOOK_URL, role ping: VALHEIM_PATCH_DISCORD_GROUP_TAG).
 
 Standard library only, so it runs anywhere Python 3.9+ is available.
 """
@@ -30,6 +31,18 @@ NOTES_DIR = os.path.join(ROOT, "patchnotes")
 HL_START, HL_END = "<!-- highlights:start -->", "<!-- highlights:end -->"
 HL_PLACEHOLDER = "_Highlights pending._"
 UA = {"User-Agent": "QuanheimModList-patchnotes (+%s)" % REPO_URL}
+
+def env(*names):
+    """First non-empty environment variable among `names`."""
+    for n in names:
+        v = os.environ.get(n, "").strip()
+        if v:
+            return v
+    return ""
+
+# Environment names: VALHEIM_PATCH_* (current) with the older DISCORD_* names as a fallback.
+WEBHOOK_ENV = ("VALHEIM_PATCH_DISCORD_WEBHOOK_URL", "DISCORD_WEBHOOK_URL")
+ROLE_ENV = ("VALHEIM_PATCH_DISCORD_GROUP_TAG", "DISCORD_ROLE_ID")
 
 
 # ---------------------------------------------------------------- helpers
@@ -474,7 +487,7 @@ def build_payload(state):
              "footer": {"text": f"{len(state['mods'])} mods · Gale profile {PROFILE_CODE}"},
              "timestamp": lp["profileUpdatedAt"]}
     payload = {"username": WEBHOOK_NAME, "embeds": [embed], "allowed_mentions": {"parse": []}}
-    role = os.environ.get("DISCORD_ROLE_ID", "").strip()
+    role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))   # accept "123..." or "<@&123...>"
     if role.isdigit():   # mentions only ping from message content, not from inside an embed
         payload["content"] = f"<@&{role}> new mod updates are live. Update via Gale before you join."
         payload["allowed_mentions"] = {"parse": [], "roles": [role]}
@@ -493,9 +506,9 @@ def cmd_post(args):
     if args.dry_run:
         print(json.dumps(payload, indent=1, ensure_ascii=False))
         return
-    hook = os.environ.get("DISCORD_WEBHOOK_URL")
+    hook = env(*WEBHOOK_ENV)
     if not hook:
-        sys.exit("DISCORD_WEBHOOK_URL is not set")
+        sys.exit("no webhook: set %s" % " or ".join(WEBHOOK_ENV))
     sep = "&" if "?" in hook else "?"
     resp = json.loads(http(hook + sep + "wait=true", data=json.dumps(payload).encode(),
                            headers={"Content-Type": "application/json"}, method="POST"))

@@ -30,10 +30,11 @@ The mechanics live in [`tools/patchnotes.py`](tools/patchnotes.py).
 python3 tools/patchnotes.py check            # status only
 python3 tools/patchnotes.py prepare          # write modlist.json + patch note
 python3 tools/patchnotes.py post --dry-run   # show the Discord payload
-DISCORD_WEBHOOK_URL=... python3 tools/patchnotes.py post
+VALHEIM_PATCH_DISCORD_WEBHOOK_URL=... python3 tools/patchnotes.py post
 ```
 
-Settings (environment variables): `DISCORD_WEBHOOK_URL` (required for posting), `DISCORD_ROLE_ID` (optional role to
-ping), plus optional `GALE_PROFILE_CODE`, `PATCHNOTES_REPO_URL`, `PATCHNOTES_BRANCH` and `PATCHNOTES_WEBHOOK_NAME`.
+Settings (environment variables): `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` (required for posting),
+`VALHEIM_PATCH_DISCORD_GROUP_TAG` (optional role ID to ping; the older names `DISCORD_WEBHOOK_URL` and
+`DISCORD_ROLE_ID` still work), plus optional `GALE_PROFILE_CODE`, `PATCHNOTES_REPO_URL`, `PATCHNOTES_BRANCH` and `PATCHNOTES_WEBHOOK_NAME`.
 
 Patch notes are quoted from each mod author's changelog or README, with links to the originals.
