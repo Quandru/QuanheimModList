@@ -16,9 +16,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # When the CLAUDE_CODE_OAUTH_TOKEN secret stops working. After renewing it (claude setup-token),
-  # update the secret and move this date on by a year.
-  CLAUDE_TOKEN_EXPIRES: "2027-10-30"
+  # When the CLAUDE_CODE_OAUTH_TOKEN secret stops working (YYYY-MM-DD). Set as a repository variable next to the
+  # secret (Settings → Secrets and variables → Actions → Variables) and move it on a year after renewing.
+  CLAUDE_TOKEN_EXPIRES: ${{ vars.CLAUDE_TOKEN_EXPIRES }}
   # Days before expiry to start warning.
   CLAUDE_TOKEN_WARN_DAYS: "30"
 
@@ -154,6 +154,10 @@ jobs:
 
       - name: Claude token expiry
         run: |
+          if [ -z "$CLAUDE_TOKEN_EXPIRES" ]; then
+            echo "::warning::Repository variable CLAUDE_TOKEN_EXPIRES isn't set, so token expiry isn't tracked"
+            exit 0
+          fi
           days=$(( ( $(date -ud "$CLAUDE_TOKEN_EXPIRES" +%s) - $(date -u +%s) ) / 86400 ))
           echo "Claude token expires $CLAUDE_TOKEN_EXPIRES ($days days)"
           [ "$days" -gt "$CLAUDE_TOKEN_WARN_DAYS" ] && exit 0
@@ -164,7 +168,7 @@ jobs:
           To renew:
           1. On your computer, run \`claude setup-token\` and copy the token it prints.
           2. In this repo, go to Settings → Secrets and variables → Actions, edit \`CLAUDE_CODE_OAUTH_TOKEN\` and paste the new token.
-          3. In \`.github/workflows/patchnotes.yml\`, set \`CLAUDE_TOKEN_EXPIRES\` to the new expiry date (a year from today).
+          3. On the same page, under the Variables tab, set \`CLAUDE_TOKEN_EXPIRES\` to the new expiry date (a year from today, YYYY-MM-DD).
           4. Close this issue.
 
           @$OWNER · [workflow run]($RUN_URL)"
