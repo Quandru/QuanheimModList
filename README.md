@@ -41,8 +41,8 @@ Repository secrets (Settings → Secrets and variables → Actions):
 | Secret | What it is |
 |---|---|
 | `CLAUDE_CODE_OAUTH_TOKEN` | From `claude setup-token`, run on your own machine. Uses your Claude subscription. |
-| `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` | The Discord webhook to post to. |
 | `CLAUDE_CODE_OAUTH_TOKEN_EXPIRES` | When that token expires, as `YYYY-MM-DD`. Update it with the token. |
+| `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` | The Discord webhook to post to. |
 | `VALHEIM_PATCH_DISCORD_GROUP_TAG` | Optional: the ID of the role to ping. |
 
 The steps live in [`.claude/skills/quanheim-patchnotes/SKILL.md`](.claude/skills/quanheim-patchnotes/SKILL.md).
