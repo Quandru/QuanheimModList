@@ -22,7 +22,7 @@ with patch notes for every change.
 4. **Write:** update `modlist.json` and write the patch note. Claude writes the highlights.
 5. **Publish:** push to `main`, then post an embed to Discord with the highlights and a link to the full notes.
 
-## Automation
+## Automation 
 
 A GitHub Action ([`.github/workflows/patchnotes.yml`](.github/workflows/patchnotes.yml)) runs every 5 minutes.
 Most runs only check the profile and stop. When mods change, it prepares the patch note, runs Claude Code
