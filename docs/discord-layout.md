@@ -8,9 +8,11 @@ because it allows blocks in any order and cards without a coloured edge. Plain e
 
 ## Order of blocks
 
-1. **Spacer**: a 1 px high, banner-width, fully transparent image. *Every* message starts and ends with one.
-   It forces every message to the same width and gives each message the same gap above and below.
-2. **Ping line** (first message only): `@Valheim new mod updates are live. Update via Gale before you join.`
+1. **Ping line** (first message only): `@Valheim new mod updates are live. Update via Gale before you join.`
+2. **Spacer**: a 1 px high, banner-width, fully transparent image. *Every* message starts and ends with one
+   (in the first message, the opening spacer comes after the ping line). It forces every message to the same width
+   and gives each message the same gap above and below. Every image use is attached under its own file name:
+   Discord shows a file in only one place per message, so a reused name renders as an empty box.
 3. **Banner image** (first message only): generated per patch. Dark stone, bronze frame on the very edge,
    "ᛩ QUANHEIM ᛩ", "Mod update", the date and mod count, and Updated / New / Removed counts.
 4. **Summary card**: no coloured edge, no image. 2–5 short bullets for players, then

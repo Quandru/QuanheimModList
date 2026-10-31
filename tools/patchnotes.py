@@ -687,8 +687,11 @@ def card_text(card):
     text = "\n".join(lines)
     return text if len(text) <= 3000 else text[:2990].rsplit("\n", 1)[0] + "\n- …"
 
+BANNER_PATH = [None]
+
 def build_messages(state, cards, banner_path=None):
-    """List of (components, files to attach, ping) per message, following docs/discord-layout.md."""
+    """List of (components, [(attachment name, source file)], ping) per message, following docs/discord-layout.md."""
+    BANNER_PATH[0] = banner_path
     lp = state["lastPatch"]
     url = f"{REPO_URL}/blob/{BRANCH}/{lp['file']}"
     role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))
@@ -733,25 +736,40 @@ def build_messages(state, cards, banner_path=None):
 
     out = []
     for i, blocks in enumerate(messages):
-        comps = [spacer] + blocks + [spacer]
-        names = {it["media"]["url"][len("attachment://"):] for c in comps if c["type"] == 12 for it in c["items"]}
-        files = [banner_path if n == "banner.png" else os.path.join(ASSETS, n) for n in sorted(names)]
-        out.append((comps, files, i == 0 and role.isdigit()))
+        # first message: ping line, then the spacer, then the banner. Others: spacer first. All end with one.
+        comps = blocks[:1] + [spacer] + blocks[1:] + [spacer] if i == 0 else [spacer] + blocks + [spacer]
+        out.append(_unique_images(comps) + (i == 0 and role.isdigit(),))
     return out
+
+def _unique_images(comps):
+    """Give every image use its own attachment name. Discord shows a file attached once in only one place, so a
+    second use of the same file (e.g. both rune rules) would render as an empty box."""
+    comps, files, seen = json.loads(json.dumps(comps)), [], {}
+    for c in comps:
+        if c["type"] != 12:
+            continue
+        for it in c["items"]:
+            name = it["media"]["url"][len("attachment://"):]
+            stem = name[:-4]
+            seen[stem] = seen.get(stem, 0) + 1
+            unique = f"{stem}-{seen[stem]}.png"
+            it["media"]["url"] = f"attachment://{unique}"
+            files.append((unique, BANNER_PATH[0] if name == "banner.png" else os.path.join(ASSETS, name)))
+    return comps, files
 
 def _post_message(hook, comps, files, ping_role):
     payload = {"username": WEBHOOK_NAME, "flags": 1 << 15, "components": comps,
                "allowed_mentions": {"parse": [], "roles": [ping_role]} if ping_role else {"parse": []}}
     if AVATAR_URL:
         payload["avatar_url"] = AVATAR_URL
-    payload["attachments"] = [{"id": i, "filename": os.path.basename(f)} for i, f in enumerate(files)]
+    payload["attachments"] = [{"id": i, "filename": name} for i, (name, _) in enumerate(files)]
     boundary = "quanheim" + os.urandom(8).hex()
     body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n"
             f"Content-Type: application/json\r\n\r\n").encode() + json.dumps(payload).encode() + b"\r\n"
-    for i, f in enumerate(files):
-        with open(f, "rb") as fh:
+    for i, (name, src) in enumerate(files):
+        with open(src, "rb") as fh:
             body += (f"--{boundary}\r\nContent-Disposition: form-data; name=\"files[{i}]\"; "
-                     f"filename=\"{os.path.basename(f)}\"\r\nContent-Type: image/png\r\n\r\n").encode() + fh.read() + b"\r\n"
+                     f"filename=\"{name}\"\r\nContent-Type: image/png\r\n\r\n").encode() + fh.read() + b"\r\n"
     body += f"--{boundary}--\r\n".encode()
     sep = "&" if "?" in hook else "?"
     return json.loads(http(hook + sep + "wait=true&with_components=true", data=body, method="POST",
@@ -792,7 +810,7 @@ def cmd_post(args):
         sys.exit("the cards file has no summary yet; run `highlights` first")
     messages = build_messages(state, cards, None if args.dry_run else render_banner(cards))
     if args.dry_run:
-        print(json.dumps([{"components": c, "files": [os.path.basename(f) for f in fs], "ping": p}
+        print(json.dumps([{"components": c, "files": [n for n, _ in fs], "ping": p}
                           for c, fs, p in messages], indent=1, ensure_ascii=False))
         return
     hook = env(*WEBHOOK_ENV)
