@@ -11,8 +11,8 @@ Subcommands (run from the repo root):
                         keep only the wording, restore every fact from FILE (the file as prepare wrote it), fill
                         anything left empty with simple text, and copy the summary into the patch note.
   post [--dry-run]      Post the latest patch to Discord, laid out as in docs/discord-layout.md
-                        (env VALHEIM_PATCH_DISCORD_WEBHOOK_URL, role ping: VALHEIM_PATCH_DISCORD_GROUP_TAG,
-                        optional webhook avatar: PATCHNOTES_AVATAR_URL).
+                        (env VALHEIM_PATCH_DISCORD_WEBHOOK_URL, role ping: VALHEIM_PATCH_DISCORD_GROUP_TAG).
+                        The avatar is the webhook's own, set in Discord.
 
 Standard library only, except that the Discord banner image needs Pillow (tools/images.py). Without Pillow the
 banner becomes a text heading and everything else still works.
@@ -23,7 +23,6 @@ PROFILE_CODE = os.environ.get("GALE_PROFILE_CODE", "ZKG7UK")
 REPO_URL = os.environ.get("PATCHNOTES_REPO_URL", "https://github.com/Quandru/QuanheimModList")
 BRANCH = os.environ.get("PATCHNOTES_BRANCH", "main")
 WEBHOOK_NAME = os.environ.get("PATCHNOTES_WEBHOOK_NAME", "Quanheim Mod Updates")
-AVATAR_URL = os.environ.get("PATCHNOTES_AVATAR_URL", "")
 
 GALE = "https://gale.kesomannen.com/api/profile"
 API = {"thunderstore": "https://thunderstore.io/api/experimental/package",
@@ -760,8 +759,6 @@ def _unique_images(comps):
 def _post_message(hook, comps, files, ping_role):
     payload = {"username": WEBHOOK_NAME, "flags": 1 << 15, "components": comps,
                "allowed_mentions": {"parse": [], "roles": [ping_role]} if ping_role else {"parse": []}}
-    if AVATAR_URL:
-        payload["avatar_url"] = AVATAR_URL
     payload["attachments"] = [{"id": i, "filename": name} for i, (name, _) in enumerate(files)]
     boundary = "quanheim" + os.urandom(8).hex()
     body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n"
