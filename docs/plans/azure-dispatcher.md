@@ -110,7 +110,7 @@ itself with Entra automatically, so it needs a pre-made app registration. Micros
 on a local machine, and for Cursor's cloud agents with a web redirect and client secret. This is the cloud
 equivalent for claude.ai.
 
-1. Entra admin center → **Enterprise applications**: confirm **Azure DevOps MCP** (app ID
+1. ✅ *(done 31 Oct 2026)* Entra admin center → **Enterprise applications**: confirm **Azure DevOps MCP** (app ID
    `2a72489c-aab2-4b65-b93a-a91edccf33b8`) is present in the tenant. In a tenant that hasn't used the remote
    ADO MCP before, it won't be. Add it from Azure Cloud Shell (needs Application Admin or Global Admin):
    ```bash
@@ -127,11 +127,13 @@ equivalent for claude.ai.
    build). Copy the value; it's shown once.
 5. **API permissions → Add a permission → APIs my organization uses → Azure DevOps MCP** → delegated permissions.
    Least privilege for this build:
-   - read access to projects, code and builds
-   - **build: read & execute** (to create and run the pipeline)
+   - `Ado.Mcp.Tools`: the basic permission to use the MCP's tools at all
+   - `repos.read`: confirm the repo and list its files
+   - `pipelines.read`: pipeline runs and logs
+   - `pipelines.manage`: create the YAML pipeline definition and run it (`pipelines.write` only covers queueing)
 
-   Skip work items, wiki, test plans and Advanced Security. The exact names are in the picker; choose the closest
-   matches.
+   Leave out everything else (`repos.write`, `wit.*`, `wiki.*`, `work.*`, `testplan.*`, `elm.*`, `advsec.*`).
+   Code goes up through git with the A4 PAT, not through the MCP.
 6. **Grant admin consent**.
 7. In claude.ai: **Settings → Connectors → Add custom connector**:
    - Name: `Azure DevOps`
