@@ -90,12 +90,12 @@ Do these before starting the build session. Never paste a token, secret or passw
 
 1. ✅ Project **Azure Functions** exists in the `quandru` org.
 2. ✅ Repo **`gaming-functions`** exists and is empty (not initialised), so the first push is clean.
-3. Create the service connection: **Project settings → Service connections → New → Azure Resource Manager →
+3. ✅ *(done 31 Oct 2026)* Create the service connection: **Project settings → Service connections → New → Azure Resource Manager →
    Workload identity federation (automatic)**.
    - Scope: **Resource group** `Azure_Functions`
    - Name: **`sc-azure-functions`**
    - Leave "Grant access permission to all pipelines" **off**. The first pipeline run asks you to approve it once.
-4. That service connection gets **Contributor** on the resource group. The Bicep also creates role assignments,
+4. ✅ *(done: Contributor + conditional RBAC Administrator on `Azure_Functions`)* That service connection gets **Contributor** on the resource group. The Bicep also creates role assignments,
    so give its service principal one more role:
    - On the service connection, select **Manage Service Principal** and note its name.
    - Resource group → **Access control (IAM) → Add role assignment → Role Based Access Control Administrator**.
