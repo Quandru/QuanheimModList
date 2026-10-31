@@ -20,16 +20,19 @@ because it allows blocks in any order and cards without a coloured edge. Plain e
    (framework updates included), the summary card holds just the link: the mod's own card says it all.
 5. **Rune rule**: a gold line with **ᛩᚢᚪᚾᚻᛖᛁᛗ** (QUANHEIM in Anglo-Saxon runes), on a transparent image
    with room above and below.
-6. **One card per mod**, in the order updated → added → removed → rolled back → enabled → disabled → moved.
+6. **Game update card** (only when the server's Valheim version changed since the last post): a 🟦 blue card,
+   "🛡️ Valheim game update", saying the server is now on the new version and to update Valheim in Steam.
+   The legend then gains `🟦 Game update`.
+7. **One card per mod**, in the order updated → added → removed → rolled back → enabled → disabled → moved.
    - Coloured edge by change: 🟨 updated, 🟩 new or enabled, 🟥 removed, rolled back or disabled.
    - The mod's own icon (from Thunderstore or Hexium) in the corner.
    - `-# by Author · Source`, then the mod name as a heading linking to its page.
    - **One version block per version step, oldest first**: a code-style line such as `2.6.4 → 2.6.5` with
      its own bullets underneath, then `2.6.5 → 2.6.6` with its bullets, and so on.
-7. **Framework and library card** (only when one changed): a single card with a 🟪 purple edge and no image,
+8. **Framework and library card** (only when one changed): a single card with a 🟪 purple edge and no image,
    one bullet per framework or library (`FRAMEWORKS` in the code), each `**Name** old → new: one line`.
-8. **Rune rule** again.
-9. **Footer card**: no coloured edge, no image. The mod count, Gale profile and sync time, then the legend:
+9. **Rune rule** again.
+10. **Footer card**: no coloured edge, no image. The mod count, Gale profile and sync time, then the legend:
    `🟨 Updated · 🟩 New mod · 🟥 Removed / rolled back · 🟪 Framework / library`.
 
 ## Splitting
@@ -40,3 +43,15 @@ because it allows blocks in any order and cards without a coloured edge. Plain e
   and the last one ends with the framework card, the rune rule and the footer.
 - Every message starts and ends with a spacer, so widths and gaps match whether a patch is one message or
   several. Discord repeats the bot's name on each later message; that can't be changed.
+
+## Server game updates
+
+Every run queries the game server (Steam's A2S query; the address comes from the Gale profile's ServerConnect config,
+never from this repo) and records its Valheim version in `status/server-version.json`, with a history, only when it
+changes. A change raises an alert:
+
+- **Mods changed in the same run:** the mod post carries the 🟦 game update card (rule 6 above).
+- **No mod changes:** a short post of its own: the role ping (`@Valheim the Valheim server has been updated.`),
+  a spacer, the 🟦 card and a spacer.
+
+If the server doesn't answer (e.g. mid-reboot), nothing is recorded and the next run catches the new version.

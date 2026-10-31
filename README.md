@@ -31,7 +31,9 @@ A GitHub Action ([`.github/workflows/patchnotes.yml`](.github/workflows/patchnot
 An Azure Function starts it (a `workflow_dispatch`), because GitHub's own schedule for free public repos only
 runs every few hours. The function is `valheim_quanheim_patchnote_dispatcher` in the Gaming Function App, built and
 deployed from the private ADO repo `quandru/Azure Functions/gaming-functions`. The workflow's own hourly schedule is a
-fallback in case the dispatcher stops. Most runs only check the profile and stop. When mods change, it prepares the patch note, runs Claude Code
+fallback in case the dispatcher stops. Most runs only check the profile and stop. Each run also asks the game server for its Valheim version and records it in
+[`status/server-version.json`](status/server-version.json) when it changes, so players get a "game update" alert
+in Discord (see [`docs/discord-layout.md`](docs/discord-layout.md)). When mods change, it prepares the patch note, runs Claude Code
 (signed in with a Claude subscription token) to write the highlights, pushes, and posts to Discord. If Claude
 can't run, simple highlights are filled in so the patch still goes out.
 

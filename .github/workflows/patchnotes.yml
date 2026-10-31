@@ -51,6 +51,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p .patchnotes
 
+          # the game server's Valheim version, before the mod check. Recorded in status/server-version.json only when
+          # it changes; a change leaves an alert for this run's mod post or a post of its own. Never fails the run.
+          python3 tools/patchnotes.py server || true
+
           # a Gale/Thunderstore outage is a warning, not a failed run: the next run retries
           if ! python3 tools/patchnotes.py check --record > .patchnotes/check.json; then
             echo "::warning::Couldn't reach the Gale profile; will retry next run"
@@ -133,6 +137,12 @@ jobs:
             gh issue create --title "$1" --body "$2"$'\n\n'"@$OWNER · [workflow run]($RUN_URL)"
           }
 
+          # a new server version gets its own commit, before anything else
+          if [ -n "$(git status --porcelain -- status/server-version.json)" ]; then
+            msg=$(python3 -c 'import json; r=json.load(open(".patchnotes/server.json")); print("Server version recorded: Valheim " + r["game"] if r["status"] == "baseline" else "Server updated: Valheim " + r["from"] + " → " + r["game"])')
+            git add status/server-version.json && git commit -q -m "$msg" && push
+          fi
+
           if [ -n "$FILE" ]; then
             # keeps only Claude's wording in the cards file, restores every fact, fills any gaps with simple text
             python3 tools/patchnotes.py highlights --original .patchnotes/original.discord.json
@@ -160,6 +170,21 @@ jobs:
               echo "::warning::Discord post failed; the next run will retry"
               alert "Discord post failed" \
                 "The latest patch couldn't be posted to Discord. Every run retries it, and this issue stays open until you close it. If the webhook was deleted or changed, update \`VALHEIM_PATCH_DISCORD_WEBHOOK_URL\` under Settings → Secrets and variables → Actions."
+            fi
+          fi
+
+          # a server game update that no mod post carried goes out on its own (unless a mod post is still pending,
+          # which will carry it)
+          unposted=$(python3 -c 'import json; s=json.load(open("modlist.json")); lp=s.get("lastPatch") or {}; print("yes" if lp and not lp["discord"].get("posted") else "")')
+          if [ -z "$unposted" ] && python3 -c 'import sys; sys.path.insert(0, "tools"); import patchnotes as p; sys.exit(0 if p.pending_server_alert() else 1)'; then
+            if [ -z "$VALHEIM_PATCH_DISCORD_WEBHOOK_URL" ]; then
+              echo "::warning::VALHEIM_PATCH_DISCORD_WEBHOOK_URL secret not set; server update not posted"
+            elif python3 tools/patchnotes.py post-server; then
+              commit "Record server update alert"
+            else
+              echo "::warning::Server update alert failed; the next run will retry"
+              alert "Discord post failed" \
+                "A Valheim server update alert couldn't be posted to Discord. Every run retries it, and this issue stays open until you close it."
             fi
           fi
 

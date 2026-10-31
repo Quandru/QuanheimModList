@@ -10,6 +10,10 @@ Subcommands (run from the repo root):
                         After Claude has written the wording into the cards file (patchnotes/<date>.discord.json):
                         keep only the wording, restore every fact from FILE (the file as prepare wrote it), fill
                         anything left empty with simple text, and copy the summary into the patch note.
+  server                Query the game server (Steam A2S, address from the Gale profile's ServerConnect config) and
+                        record its Valheim version in status/server-version.json when it changes. A change leaves an
+                        alert pending: the next mod post carries it as a card, or `post-server` sends it on its own.
+  post-server           Post a pending server-update alert on its own (when no mod update carried it).
   post [--dry-run]      Post the latest patch to Discord, laid out as in docs/discord-layout.md
                         (env VALHEIM_PATCH_DISCORD_WEBHOOK_URL, role ping: VALHEIM_PATCH_DISCORD_GROUP_TAG).
                         The avatar is the webhook's own, set in Discord.
@@ -506,7 +510,7 @@ def cmd_prepare(args):
 # ---------------------------------------------------------------- discord: cards file
 # Layout rules: docs/discord-layout.md. prepare writes patchnotes/<date>.discord.json with the facts; Claude fills in
 # the wording (summary, emoji, bullets, framework lines); `highlights` checks it; `post` builds the messages from it.
-YELLOW, GREEN, RED, PURPLE = 0xFDCB58, 0x78B159, 0xDD2E44, 0xAA8ED6
+YELLOW, GREEN, RED, PURPLE, BLUE = 0xFDCB58, 0x78B159, 0xDD2E44, 0xAA8ED6, 0x55ACEE
 CARD_COLOR = {"updated": YELLOW, "source-changed": YELLOW, "added": GREEN, "enabled": GREEN,
               "removed": RED, "downgraded": RED, "disabled": RED}
 LEGEND = "🟨 Updated · 🟩 New mod · 🟥 Removed / rolled back · 🟪 Framework / library"
@@ -709,6 +713,9 @@ def build_messages(state, cards, banner_path=None):
     else:
         head.append(_container("\n".join("- " + b for b in cards["summary"]) + "\n\n" + link))
     head.append(_image("rune-rule.png"))
+    alert = pending_server_alert()
+    if alert:                                    # the server's game version changed: first card, before the mods
+        head.append(server_card(alert))
     body = [_container(card_text(c), CARD_COLOR.get(c["change"], YELLOW), c.get("icon")) for c in cards["cards"]]
     tail = []
     if cards["framework"]:
@@ -717,7 +724,8 @@ def build_messages(state, cards, banner_path=None):
             f' `{f["label"]}`: {f["line"]}' for f in cards["framework"]), PURPLE))
     tail += [_image("rune-rule.png"),
              _container(f'-# {cards["totalMods"]} mods · Gale profile {PROFILE_CODE} · synced '
-                        f'{synced.strftime("%-d %b, %H:%M")} UTC\n\n-# {LEGEND}')]      # blank line: legend sits apart
+                        f'{synced.strftime("%-d %b, %H:%M")} UTC\n\n-# {LEGEND}' +    # blank line: legend sits apart
+                        (" · 🟦 Game update" if alert else ""))]
 
     spacer = _image("spacer.png")
     base_n, base_c = _size(spacer)
@@ -826,7 +834,99 @@ def cmd_post(args):
     lp["discord"] = {"posted": True, "messageId": ids[0], "messageIds": ids,
                      "postedAt": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")}
     save_state(state)
+    if pending_server_alert():                   # the post carried the server-update card
+        mark_server_alert_posted(ids[0])
     print(json.dumps({"status": "posted", "messages": len(ids), "messageIds": ids}))
+
+
+# ---------------------------------------------------------------- server version
+SERVER_STATE = os.path.join(ROOT, "status", "server-version.json")
+
+def load_server_state():
+    if os.path.exists(SERVER_STATE):
+        with open(SERVER_STATE) as f:
+            return json.load(f)
+    return None
+
+def save_server_state(st):
+    os.makedirs(os.path.dirname(SERVER_STATE), exist_ok=True)
+    with open(SERVER_STATE, "w") as f:
+        json.dump(st, f, indent=2)
+        f.write("\n")
+
+def pending_server_alert():
+    st = load_server_state()
+    alert = (st or {}).get("alert")
+    return alert if alert and not alert.get("posted") else None
+
+def mark_server_alert_posted(message_id):
+    st = load_server_state()
+    st["alert"].update(posted=True, messageId=message_id,
+                       postedAt=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"))
+    save_server_state(st)
+
+def server_card(alert):
+    was = f' (was {alert["from"]})' if alert.get("from") else ""
+    return _container(f'### 🛡️ Valheim game update\nThe server has been updated to **Valheim {alert["to"]}**{was}.\n'
+                      f'- Update Valheim in Steam before you join.', BLUE)
+
+def cmd_server(args):
+    """Query the server and record its game version when it changes. Never fails the run: an unreachable server
+    (e.g. mid-reboot) just records nothing, and the next run catches the new version."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import server_query
+    os.makedirs(WORK_DIR, exist_ok=True)
+    result = {"status": "unreachable"}
+    try:
+        host, port = server_query.address_from_profile()
+        if os.environ.get("GITHUB_ACTIONS"):
+            print(f"::add-mask::{host}")         # keep the IP out of the public log
+        info = server_query.query(host, port)
+        kw = dict(kv.split("=", 1) for kv in info.get("keywords", "").split(",") if "=" in kv)
+        ver = {"game": kw.get("g"), "network": kw.get("n")}
+        now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+        st = load_server_state()
+        if not ver["game"]:
+            result = {"status": "no-version", "keywords": info.get("keywords")}
+        elif st is None:
+            save_server_state({"current": {**ver, "since": now}, "history": [{**ver, "since": now}], "alert": None})
+            result = {"status": "baseline", **ver}
+        elif (st["current"]["game"], st["current"].get("network")) == (ver["game"], ver["network"]):
+            result = {"status": "same", **ver}
+        else:
+            prev = st["current"]
+            st["current"] = {**ver, "since": now}
+            st["history"].append({**ver, "since": now})
+            st["alert"] = {"from": prev["game"], "to": ver["game"], "detectedAt": now, "posted": False}
+            save_server_state(st)
+            result = {"status": "changed", "from": prev["game"], **ver}
+    except Exception as e:                       # unreachable, profile download failed, ...
+        result["error"] = f"{type(e).__name__}: {e}"[:200]
+    with open(os.path.join(WORK_DIR, "server.json"), "w") as f:
+        json.dump(result, f)
+    print(json.dumps(result))
+
+def cmd_post_server(args):
+    alert = pending_server_alert()
+    if not alert:
+        print(json.dumps({"status": "nothing-pending"}))
+        return
+    role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))
+    ping = f"<@&{role}> the Valheim server has been updated." if role.isdigit() else "The Valheim server has been updated."
+    spacer = _image("spacer.png")
+    comps, files = _unique_images([_text(ping), spacer, server_card(alert), spacer])
+    if args.dry_run:
+        print(json.dumps(comps, indent=1, ensure_ascii=False))
+        return
+    hook = env(*WEBHOOK_ENV)
+    if not hook:
+        sys.exit("no webhook: set %s" % " or ".join(WEBHOOK_ENV))
+    try:
+        mid = _post_message(hook, comps, files, role if role.isdigit() else None)
+    except urllib.error.HTTPError as e:
+        sys.exit(f"Discord refused the server alert: HTTP {e.code} {e.read()[:500].decode('utf-8', 'replace')}")
+    mark_server_alert_posted(mid)
+    print(json.dumps({"status": "posted", "messageId": mid}))
 
 
 def main():
@@ -839,6 +939,9 @@ def main():
     p = sub.add_parser("prepare"); p.set_defaults(fn=cmd_prepare)
     p.add_argument("--backfill-days", type=float, default=0,
                    help="first run only: treat versions released in the last N days as this patch")
+    sub.add_parser("server").set_defaults(fn=cmd_server)
+    p = sub.add_parser("post-server"); p.set_defaults(fn=cmd_post_server)
+    p.add_argument("--dry-run", action="store_true")
     p = sub.add_parser("post"); p.set_defaults(fn=cmd_post)
     p.add_argument("--dry-run", action="store_true"); p.add_argument("--force", action="store_true")
     args = ap.parse_args()
