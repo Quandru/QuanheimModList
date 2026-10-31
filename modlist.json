@@ -3,20 +3,19 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-10-30T01:49:58.226801Z"
+    "updatedAt": "2026-10-31T02:57:19.901588Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-10-30-0149.md",
-    "profileUpdatedAt": "2026-10-30T01:49:58.226801Z",
-    "previousProfileUpdatedAt": null,
+    "file": "patchnotes/2026-10-31-0257.md",
+    "profileUpdatedAt": "2026-10-31T02:57:19.901588Z",
+    "previousProfileUpdatedAt": "2026-10-30T01:49:58.226801Z",
     "counts": {
-      "updated": 5
+      "updated": 2
     },
     "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1565561760214294693",
-      "postedAt": "2026-10-30T03:03:30+00:00"
+      "posted": false,
+      "messageId": null
     }
   },
   "mods": [
@@ -64,10 +63,15 @@
     },
     {
       "name": "Azumatt-AzuExtendedPlayerInventory",
-      "version": "2.6.4",
+      "version": "2.6.6",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuExtendedPlayerInventory"
+      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuExtendedPlayerInventory",
+      "lastPatch": {
+        "change": "updated",
+        "from": "2.6.4",
+        "to": "2.6.6"
+      }
     },
     {
       "name": "Azumatt-AzuMiscPatches",
@@ -186,12 +190,7 @@
       "version": "5.4.2360",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "5.4.2351",
-        "to": "5.4.2360"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/"
     },
     {
       "name": "Digitalroot-Digitalroots_Slope_Combat_Assistance",
@@ -254,12 +253,7 @@
       "version": "2.3.3",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "2.3.2",
-        "to": "2.3.3"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/"
     },
     {
       "name": "MathiasDecrock-PlanBuild",
@@ -308,12 +302,7 @@
       "version": "1.9.4",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinArchitect",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.9.3",
-        "to": "1.9.4"
-      }
+      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinArchitect"
     },
     {
       "name": "OdinPlus-OdinBanners",
@@ -324,10 +313,15 @@
     },
     {
       "name": "OdinPlus-OdinsFoodBarrels",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/OdinPlus/OdinsFoodBarrels/"
+      "url": "https://thunderstore.io/c/valheim/p/OdinPlus/OdinsFoodBarrels/",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.4.0",
+        "to": "1.4.1"
+      }
     },
     {
       "name": "OdinPlus-TeleportCarts",
@@ -376,12 +370,7 @@
       "version": "1.2.0",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.1.0",
-        "to": "1.2.0"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/"
     },
     {
       "name": "R3ddTeamRules-Warmth",
@@ -465,12 +454,7 @@
       "version": "1.1.9",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/TastyChickenLegs/TreesReborn/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.1.8",
-        "to": "1.1.9"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/TastyChickenLegs/TreesReborn/"
     },
     {
       "name": "ValheimModding-Jotunn",
