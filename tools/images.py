@@ -39,13 +39,15 @@ def font(name, size):
     return ImageFont.truetype(path, size)
 
 
-def _frame(bg):
-    """A banner-sized canvas: transparent outside a rounded frame on the very edge, and the QUANHEIM line."""
+def _frame(bg, name_line=True):
+    """A banner-sized canvas: transparent outside a rounded frame on the very edge, and (optionally) the QUANHEIM line."""
     from PIL import Image, ImageDraw
     h = 300
     img = Image.new("RGBA", (W, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     d.rounded_rectangle([0, 0, W - 1, h - 1], radius=16, fill=bg, outline=FRAME, width=6)
+    if not name_line:
+        return img, d
     x, y = 56, 58
     rune, cap = font("runic", 24), font("cinzel", 24)
     label = "Q U A N H E I M"
@@ -72,15 +74,17 @@ def banner(path, date, total, updated, new, removed, title="Update Notes"):
     return path
 
 
-def server_banner(path, version, previous=None):
-    """Dark red image for a change in the server's Valheim version: same size, frame and title style as the header."""
-    img, d = _frame(RED_BG)
-    x = 56
-    d.text((x, 128), "Server Update", font=font("cinzel", 60), fill=TEXT, anchor="lm")
+def server_banner(path, version, previous=None, name_line=True):
+    """Dark red image for a change in the server's Valheim version: same size, frame and title style as the header.
+    name_line=False drops the small QUANHEIM line (used under the Update Notes header, which already has it) and
+    centres the rest."""
+    img, d = _frame(RED_BG, name_line)
+    x, y = 56, (128 if name_line else 100)
+    d.text((x, y), "Server Update", font=font("cinzel", 60), fill=TEXT, anchor="lm")
     was = f" (was {previous})" if previous else ""
-    d.text((x, 196), f"The server has been updated to Valheim {version}{was}", font=font("cinzel", 26),
+    d.text((x, y + 68), f"The server has been updated to Valheim {version}{was}", font=font("cinzel", 26),
            fill=BRONZE, anchor="lm")
-    d.text((x, 240), "Update Valheim in Steam before you join.", font=font("sans", 24), fill=RED_MUTED, anchor="lm")
+    d.text((x, y + 112), "Update Valheim in Steam before you join.", font=font("sans", 24), fill=RED_MUTED, anchor="lm")
     img.save(path)
     return path
 
