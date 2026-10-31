@@ -7,12 +7,15 @@ Subcommands (run from the repo root):
                         Download the profile, work out the delta, fetch patch notes,
                         update modlist.json and write patchnotes/<date>.md.
   highlights --original FILE
-                        After an AI edit: keep only the highlights block from the edited patch note (restore
-                        everything else from FILE). If no highlights were written, fill in simple ones.
-  post [--dry-run]      Post the latest patch note to Discord
-                        (env VALHEIM_PATCH_DISCORD_WEBHOOK_URL, role ping: VALHEIM_PATCH_DISCORD_GROUP_TAG).
+                        After Claude has written the wording into the cards file (patchnotes/<date>.discord.json):
+                        keep only the wording, restore every fact from FILE (the file as prepare wrote it), fill
+                        anything left empty with simple text, and copy the summary into the patch note.
+  post [--dry-run]      Post the latest patch to Discord, laid out as in docs/discord-layout.md
+                        (env VALHEIM_PATCH_DISCORD_WEBHOOK_URL, role ping: VALHEIM_PATCH_DISCORD_GROUP_TAG,
+                        optional webhook avatar: PATCHNOTES_AVATAR_URL).
 
-Standard library only, so it runs anywhere Python 3.9+ is available.
+Standard library only, except that the Discord banner image needs Pillow (tools/images.py). Without Pillow the
+banner becomes a text heading and everything else still works.
 """
 import argparse, datetime as dt, html, io, json, os, re, sys, urllib.error, urllib.request, zipfile
 
@@ -20,6 +23,7 @@ PROFILE_CODE = os.environ.get("GALE_PROFILE_CODE", "ZKG7UK")
 REPO_URL = os.environ.get("PATCHNOTES_REPO_URL", "https://github.com/Quandru/QuanheimModList")
 BRANCH = os.environ.get("PATCHNOTES_BRANCH", "main")
 WEBHOOK_NAME = os.environ.get("PATCHNOTES_WEBHOOK_NAME", "Quanheim Mod Updates")
+AVATAR_URL = os.environ.get("PATCHNOTES_AVATAR_URL", "")
 
 GALE = "https://gale.kesomannen.com/api/profile"
 API = {"thunderstore": "https://thunderstore.io/api/experimental/package",
@@ -29,9 +33,10 @@ PAGE = {"thunderstore": "https://thunderstore.io/c/valheim/p/{ns}/{name}/",
 SOURCE_LABEL = {"thunderstore": "Thunderstore", "hexium": "Hexium"}
 CHANGELOG_PAGE = {"thunderstore": "https://thunderstore.io/c/valheim/p/{ns}/{name}/changelog/",
                   "hexium": "https://valheim.hexium.gg/mods/{ns}/{name}"}
-# Modding frameworks: their changelogs are long and technical. They appear in the table and the Discord
-# summary, but the patch note links to the changelog instead of quoting it.
-FRAMEWORKS = {"denikson-BepInExPack_Valheim", "ValheimModding-Jotunn"}
+# Modding frameworks and libraries: their changelogs are long and technical. The patch note links to the changelog
+# instead of quoting it, and Discord groups their updates into one purple card instead of a card each.
+FRAMEWORKS = {"denikson-BepInExPack_Valheim", "ValheimModding-Jotunn", "ValheimModding-JsonDotNET",
+              "ValheimModding-YamlDotNet", "ValMedia-OOD_LIB", "ZenDragon-Zen_ModLib"}
 
 ROOT = os.getcwd()
 STATE = os.path.join(ROOT, "modlist.json")
@@ -295,10 +300,10 @@ def enrich(changes):
             continue
         ns, n = split_name(c["name"])
         c["url"] = PAGE[src].format(ns=ns, name=n)
+        info = mod_api(src, c["name"], c["to"] or c["from"]) or {}
+        c["icon"] = info.get("icon")
         if c["change"] in ("updated", "added", "source-changed"):
-            info = mod_api(src, c["name"], c["to"]) or {}
             c["released"] = info.get("date_created")
-            c["icon"] = info.get("icon")
             c["description"] = info.get("description")
         if c["change"] == "updated":
             c["notes"], c["notesFrom"] = notes_between(src, c["name"], c["from"], c["to"])
@@ -481,7 +486,12 @@ def cmd_prepare(args):
             "removed": [{"name": c["name"], "version": c["from"]} for c in changes if c["change"] == "removed"],
             "discord": {"posted": False, "messageId": None},
         }
-        result.update(status="patch-written", patchFile=rel)
+        cards_rel = rel[:-3] + ".discord.json"
+        with open(os.path.join(ROOT, cards_rel), "w") as f:
+            json.dump(cards_skeleton(changes, meta, len(snap), rel), f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        new_state["lastPatch"]["cardsFile"] = cards_rel
+        result.update(status="patch-written", patchFile=rel, cardsFile=cards_rel)
         result["mods"] = []
         for c in changes:
             m = {"name": c["name"], "change": c["change"], "from": c["from"], "to": c["to"],
@@ -494,113 +504,278 @@ def cmd_prepare(args):
     print(json.dumps(result, indent=1))
 
 
-def auto_highlights(state):
-    """Plain highlights built from the changes, used when no AI summary was written."""
-    lp = state["lastPatch"]
-    with open(os.path.join(ROOT, lp["file"])) as f:
-        md = f.read()
-    lines = ["### 📦 What changed", ""]
-    for m in sorted((m for m in state["mods"] if m.get("lastPatch")), key=lambda m: pretty(m["name"]).lower()):
-        p = m["lastPatch"]
-        line = f'- **{pretty(m["name"])}** {VERB[p["change"]].lower()}'
-        if p["change"] in ("updated", "downgraded"):
-            line += f' to {p["to"]}'
-            if m["name"] not in FRAMEWORKS:     # first line of its quoted notes, if any
-                sec = md.split(f'### {pretty(m["name"])} · ', 1)
-                if len(sec) > 1:
-                    body = sec[1].split("\n---\n", 1)[0].split("</sub>", 1)[-1]
-                    first = next((l.strip() for l in body.splitlines()
-                                  if l.strip() and not l.lstrip().startswith(("#", "_", "<", "|"))), "")
-                    first = re.sub(r"^[-*+]\s+|^\d+\.\s+", "", first)
-                    if first:
-                        line += ": " + (first if len(first) <= 160 else first[:157].rsplit(" ", 1)[0] + "…")
-        lines.append(line)
-    for r in lp.get("removed", []):
-        lines.append(f'- **{pretty(r["name"])}** removed')
-    lines += ["", "-# Summary generated automatically."]
-    return "\n".join(lines)
+# ---------------------------------------------------------------- discord: cards file
+# Layout rules: docs/discord-layout.md. prepare writes patchnotes/<date>.discord.json with the facts; Claude fills in
+# the wording (summary, emoji, bullets, framework lines); `highlights` checks it; `post` builds the messages from it.
+YELLOW, GREEN, RED, PURPLE = 0xFDCB58, 0x78B159, 0xDD2E44, 0xAA8ED6
+CARD_COLOR = {"updated": YELLOW, "source-changed": YELLOW, "added": GREEN, "enabled": GREEN,
+              "removed": RED, "downgraded": RED, "disabled": RED}
+LEGEND = "🟨 Updated · 🟩 New mod · 🟥 Removed / rolled back · 🟪 Framework / library"
+WORDING = ("summary", "emoji", "bullets", "line")      # the only fields Claude may change
+
+def _steps(c):
+    """Version steps for one change, oldest first, each with the raw notes Claude summarises."""
+    ch, frm, to = c["change"], c["from"], c["to"]
+    if ch == "updated":
+        notes = list(reversed(c.get("notes") or []))           # notes_between gives newest first
+        steps, prev = [], frm
+        for ver, text in notes:
+            steps.append({"label": f"{prev} → {ver}" if prev else ver, "notes": text[:3000], "bullets": []})
+            prev = ver
+        if not steps or vkey(prev) != vkey(to):
+            steps.append({"label": f"{prev or '?'} → {to}", "notes": "", "bullets": []})
+        return steps
+    fixed = {
+        "added": (f"new · {to}", c.get("description") or "", []),
+        "removed": (f"removed · was {frm}", "", ["Removed from the pack."]),
+        "downgraded": (f"rolled back · {frm} → {to}", "", ["Rolled back to an earlier version."]),
+        "enabled": (f"enabled · {to}", "", ["Turned back on in the pack."]),
+        "disabled": (f"disabled · {to}", "", ["Turned off in the pack, but still installed."]),
+        "source-changed": (f"{to} · {SOURCE_LABEL.get(c.get('fromSource'), '?')} → "
+                           f"{SOURCE_LABEL.get(c.get('source'), '?')}", "",
+                           ["Same version, now installed from a different site. No gameplay change."]),
+    }[ch]
+    return [{"label": fixed[0], "notes": fixed[1][:3000], "bullets": list(fixed[2])}]
+
+def cards_skeleton(changes, meta, total, patch_file):
+    ordered = sorted(changes, key=lambda c: (ORDER.index(c["change"]), pretty(c["name"]).lower()))
+    cards, framework = [], []
+    for c in ordered:
+        ns, _ = split_name(c["name"])
+        if c["name"] in FRAMEWORKS and c["change"] in ("updated", "downgraded"):
+            notes = "\n\n".join(f"[{v}]\n{t}" for v, t in c.get("notes") or [])
+            framework.append({"name": c["name"], "title": pretty(c["name"]), "url": c.get("url"),
+                              "label": f'{c["from"] or "?"} → {c["to"]}', "notes": notes[:3000], "line": ""})
+            continue
+        cards.append({"name": c["name"], "title": pretty(c["name"]), "change": c["change"], "author": ns,
+                      "source": SOURCE_LABEL.get(c.get("source"), c.get("source") or ""), "url": c.get("url"),
+                      "icon": c.get("icon"), "emoji": "", "steps": _steps(c)})
+    kinds = [c["change"] for c in changes]
+    counts = {"new": kinds.count("added") + kinds.count("enabled"),
+              "removed": kinds.count("removed") + kinds.count("disabled")}
+    counts["updated"] = len(kinds) - counts["new"] - counts["removed"]
+    return {"patchFile": patch_file, "profileUpdatedAt": meta["updatedAt"], "totalMods": total, "counts": counts,
+            "summary": [], "cards": cards, "framework": framework}
+
+def _first_lines(text, n=2):
+    """Simple fallback bullets: the first n items of some notes. An item starts at a bullet or after a blank line;
+    wrapped continuation lines are joined back on. Headings, version markers and tables are skipped."""
+    items, cur = [], None
+    for raw in (text or "").splitlines():
+        line = raw.strip()
+        if (not line or line.startswith(("#", "<", "|", "_")) or set(line) <= set("-=*`")
+                or re.fullmatch(r"\[?v?\d+(?:\.\d+)+\]?:?", line)):
+            cur = None
+            continue
+        m = re.match(r"^(?:[-*+•]|\d+[.)])\s+(.*)", line)
+        if m or cur is None:
+            cur = [m.group(1) if m else line]
+            items.append(cur)
+        else:
+            cur.append(line)
+    out = []
+    for item in items[:n]:
+        l = " ".join(item)
+        out.append(l if len(l) <= 160 else l[:157].rsplit(" ", 1)[0] + "…")
+    return out
+
+def finalize_cards(edited, original):
+    """Keep only Claude's wording from `edited`; take every fact from `original`; fill gaps with simple text."""
+    out, used_ai, used_auto = json.loads(json.dumps(original)), False, False
+    def strings(v, limit):
+        return [x.strip()[:300] for x in v if isinstance(x, str) and x.strip()][:limit] if isinstance(v, list) else []
+    summary = strings(edited.get("summary"), 6)
+    for i, card in enumerate(out["cards"]):
+        e = (edited.get("cards") or [{}] * len(out["cards"]))[i] if i < len(edited.get("cards") or []) else {}
+        if isinstance(e, dict) and e.get("name") == card["name"]:
+            if isinstance(e.get("emoji"), str) and 0 < len(e["emoji"].strip()) <= 8:
+                card["emoji"] = e["emoji"].strip()
+            for j, step in enumerate(card["steps"]):
+                es = (e.get("steps") or [])[j] if j < len(e.get("steps") or []) else {}
+                b = strings(es.get("bullets") if isinstance(es, dict) else None, 6)
+                if b:
+                    step["bullets"], used_ai = b, True
+        for step in card["steps"]:
+            if not step["bullets"]:
+                step["bullets"] = _first_lines(step["notes"]) or [
+                    "The author didn't publish patch notes for this version." if card["change"] == "updated"
+                    else "New to the pack."]
+                used_auto = True
+    for i, fw in enumerate(out["framework"]):
+        e = (edited.get("framework") or [])[i] if i < len(edited.get("framework") or []) else {}
+        line = e.get("line").strip()[:200] if isinstance(e, dict) and isinstance(e.get("line"), str) else ""
+        if line and e.get("name") == fw["name"]:
+            fw["line"], used_ai = line, True
+        else:
+            fw["line"] = (_first_lines(fw["notes"], 1) or ["Framework update."])[0]
+            used_auto = True
+    if summary:
+        out["summary"], used_ai = summary, True
+    else:
+        out["summary"] = [f'{c["emoji"] or "📦"} **{c["title"]}** {VERB[c["change"]].lower()}'
+                          for c in out["cards"]][:5] or ["Framework and library updates."]
+        if out["framework"] and out["cards"]:
+            out["summary"].append("🔧 Framework and library updates.")
+        used_auto = True
+    for step in (s for c in out["cards"] for s in c["steps"]):
+        step.pop("notes", None)
+    for fw in out["framework"]:
+        fw.pop("notes", None)
+    return out, ("mixed" if used_ai and used_auto else "ai" if used_ai else "auto")
 
 def cmd_highlights(args):
     state = load_state()
-    path = os.path.join(ROOT, state["lastPatch"]["file"])
-    with open(path) as f:
-        edited = f.read()
+    lp = state["lastPatch"]
+    cards_path = os.path.join(ROOT, lp["cardsFile"])
     with open(args.original) as f:
-        original = f.read()
+        original = json.load(f)
     try:
-        block = edited.split(HL_START, 1)[1].split(HL_END, 1)[0].strip()
-    except IndexError:
-        block = ""
-    source = "ai"
-    if not block or HL_PLACEHOLDER in block:
-        block, source = auto_highlights(state), "auto"
-    head, rest = original.split(HL_START, 1)
+        with open(cards_path) as f:
+            edited = json.load(f)
+    except (OSError, ValueError):
+        edited = {}
+    cards, source = finalize_cards(edited, original)
+    with open(cards_path, "w") as f:
+        json.dump(cards, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    # the patch note's Highlights section shows the same summary
+    path = os.path.join(ROOT, lp["file"])
+    with open(path) as f:
+        md = f.read()
+    head, rest = md.split(HL_START, 1)
+    block = "\n".join("- " + b for b in cards["summary"])
     with open(path, "w") as f:
         f.write(head + HL_START + "\n" + block + "\n" + HL_END + rest.split(HL_END, 1)[1])
-    print(json.dumps({"highlights": source, "chars": len(block)}))
+    print(json.dumps({"highlights": source, "cards": len(cards["cards"]), "framework": len(cards["framework"])}))
 
-def _chunks(lines, limit=1024):
-    buf = ""
-    for l in lines:
-        if len(buf) + len(l) + 1 > limit:
-            yield buf
-            buf = ""
-        buf += l + "\n"
-    if buf:
-        yield buf
 
-FIELD_ICON = {"updated": "⬆️", "added": "✨", "removed": "🗑️", "downgraded": "⏪", "enabled": "✅",
-              "disabled": "⏸️", "source-changed": "🔀"}
-FIELD_BULLET = {"added": "✨", "enabled": "✅", "disabled": "⏸️"}
+# ---------------------------------------------------------------- discord: messages
+MAX_COMPONENTS, MAX_TEXT = 38, 3800        # Discord allows 40 and 4,000 per message; keep a margin
+ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 
-LIST_START = re.compile(r"^\s*(?:[-*+]\s|\d+[.)]\s|#|>|-#\s)")
+def _text(s):
+    return {"type": 10, "content": s}
 
-def bulletize(text):
-    """Make every plain paragraph line a "- " bullet, so text under each heading lines up in Discord
-    (which ignores leading spaces and tabs). Headings, lists, quotes and subtext are left alone."""
-    return "\n".join(l if not l.strip() or LIST_START.match(l) else "- " + l.strip() for l in text.splitlines())
+def _image(name):
+    return {"type": 12, "items": [{"media": {"url": f"attachment://{name}"}}]}
 
-def build_payload(state):
+def _container(body, accent=None, icon=None):
+    inner = ({"type": 9, "components": [_text(body)], "accessory": {"type": 11, "media": {"url": icon}}}
+             if icon else _text(body))
+    c = {"type": 17, "components": [inner]}
+    if accent is not None:
+        c["accent_color"] = accent
+    return c
+
+def _size(component):
+    """(components, characters of text) a block uses, counting nested components."""
+    n, chars = 1, len(component.get("content", ""))
+    for child in component.get("components", []) + ([component["accessory"]] if "accessory" in component else []):
+        cn, cc = _size(child)
+        n, chars = n + cn, chars + cc
+    return n + len(component.get("items", [])), chars
+
+def card_text(card):
+    title = f'{card["emoji"]} {card["title"]}'.strip()
+    lines = [f'-# by {card["author"]} · {card["source"]}',
+             f'### [{title}]({card["url"]})' if card.get("url") else f"### {title}"]
+    for i, step in enumerate(card["steps"]):
+        if i:
+            lines.append("")
+        lines.append(f'`{step["label"]}`')
+        lines += [f"- {b}" for b in step["bullets"]]
+    text = "\n".join(lines)
+    return text if len(text) <= 3000 else text[:2990].rsplit("\n", 1)[0] + "\n- …"
+
+def build_messages(state, cards, banner_path=None):
+    """List of (components, files to attach, ping) per message, following docs/discord-layout.md."""
     lp = state["lastPatch"]
-    with open(os.path.join(ROOT, lp["file"])) as f:
-        md = f.read()
-    hl = bulletize(md.split(HL_START, 1)[1].split(HL_END, 1)[0].strip())
-    title = md.splitlines()[0].lstrip("# ").strip()
     url = f"{REPO_URL}/blob/{BRANCH}/{lp['file']}"
-    if len(hl) > 3800:
-        hl = hl[:3800].rsplit("\n", 1)[0] + "\n…"
-    # Discord trims trailing blank lines, so a zero-width space keeps the gap before the rule.
-    desc = hl + "\n\u200b\n" + "━" * 22
-    by_kind = {}
-    for m in state["mods"]:
-        if m.get("lastPatch"):
-            by_kind.setdefault(m["lastPatch"]["change"], []).append(m)
-    fields = []
-    for kind in ORDER:
-        if kind == "removed":
-            items = [f'❌ **{pretty(r["name"])}** · was `{r["version"]}`' for r in lp.get("removed", [])]
-        else:
-            items = []
-            for m in sorted(by_kind.get(kind, []), key=lambda m: pretty(m["name"]).lower()):
-                p = m["lastPatch"]
-                ver = f'`{p["from"] or "?"} → {p["to"]}`' if kind in ("updated", "downgraded") else f'`{p["to"]}`'
-                name = f'[{pretty(m["name"])}]({m["url"]})' if m.get("url") else pretty(m["name"])
-                items.append(f'{FIELD_BULLET.get(kind, "▸")} **{name}** · {ver}')
-        for n, chunk in enumerate(_chunks(items)):
-            label = f'{FIELD_ICON.get(kind, "")} {VERB[kind]} ({len(items)})'.strip()
-            fields.append({"name": label + (" (cont.)" if n else ""), "value": chunk.strip(), "inline": False})
-    fields = fields[:24]
-    fields.append({"name": "\u200b", "value": f"**[📜 Read the full patch notes →]({url})**", "inline": False})
-    embed = {"title": "🛠️ " + title, "url": url, "description": desc, "color": 0xC8A04B,
-             "fields": fields,
-             "footer": {"text": f"{len(state['mods'])} mods · Gale profile {PROFILE_CODE}"},
-             "timestamp": lp["profileUpdatedAt"]}
-    payload = {"username": WEBHOOK_NAME, "embeds": [embed], "allowed_mentions": {"parse": []}}
-    role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))   # accept "123..." or "<@&123...>"
-    if role.isdigit():   # mentions only ping from message content, not from inside an embed
-        payload["content"] = f"<@&{role}> new mod updates are live. Update via Gale before you join."
-        payload["allowed_mentions"] = {"parse": [], "roles": [role]}
-    return payload
+    role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))
+    ping = f"<@&{role}> new mod updates are live." if role.isdigit() else "New mod updates are live."
+    synced = parse_time(cards["profileUpdatedAt"])
+    head = [_text(ping + " Update via Gale before you join.")]
+    k = cards["counts"]
+    if banner_path:
+        head.append(_image("banner.png"))
+    else:
+        head.append(_text(f'# Quanheim mod update\n### ⬆️ {k["updated"]} updated · ✨ {k["new"]} new · '
+                          f'🗑️ {k["removed"]} removed\n-# {synced.strftime("%-d %B %Y")} · {cards["totalMods"]} mods'))
+    link = f"**[📜 Read the full patch notes →]({url})**"
+    if len(cards["cards"]) + len(cards["framework"]) == 1:     # one mod: its card says it all, so just the link
+        head.append(_container(link))
+    else:
+        head.append(_container("\n".join("- " + b for b in cards["summary"]) + "\n\n" + link))
+    head.append(_image("rune-rule.png"))
+    body = [_container(card_text(c), CARD_COLOR.get(c["change"], YELLOW), c.get("icon")) for c in cards["cards"]]
+    tail = []
+    if cards["framework"]:
+        tail.append(_container("### Framework and library updates\n" + "\n".join(
+            (f'- **[{f["title"]}]({f["url"]})**' if f.get("url") else f'- **{f["title"]}**') +
+            f' `{f["label"]}`: {f["line"]}' for f in cards["framework"]), PURPLE))
+    tail += [_image("rune-rule.png"),
+             _container(f'-# {cards["totalMods"]} mods · Gale profile {PROFILE_CODE} · synced '
+                        f'{synced.strftime("%-d %b, %H:%M")} UTC\n-# {LEGEND}')]
+
+    spacer = _image("spacer.png")
+    base_n, base_c = _size(spacer)
+    messages, cur = [], list(head)
+    def fits(blocks):
+        n = 2 * base_n + sum(_size(b)[0] for b in blocks)
+        return n <= MAX_COMPONENTS and sum(_size(b)[1] for b in blocks) <= MAX_TEXT
+    for block in body + [tail]:                     # the tail stays together, after the last card
+        group = block if isinstance(block, list) else [block]
+        if not fits(cur + group) and cur:
+            messages.append(cur)
+            cur = []
+        cur += group
+    messages.append(cur)
+
+    out = []
+    for i, blocks in enumerate(messages):
+        comps = [spacer] + blocks + [spacer]
+        names = {it["media"]["url"][len("attachment://"):] for c in comps if c["type"] == 12 for it in c["items"]}
+        files = [banner_path if n == "banner.png" else os.path.join(ASSETS, n) for n in sorted(names)]
+        out.append((comps, files, i == 0 and role.isdigit()))
+    return out
+
+def _post_message(hook, comps, files, ping_role):
+    payload = {"username": WEBHOOK_NAME, "flags": 1 << 15, "components": comps,
+               "allowed_mentions": {"parse": [], "roles": [ping_role]} if ping_role else {"parse": []}}
+    if AVATAR_URL:
+        payload["avatar_url"] = AVATAR_URL
+    payload["attachments"] = [{"id": i, "filename": os.path.basename(f)} for i, f in enumerate(files)]
+    boundary = "quanheim" + os.urandom(8).hex()
+    body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n"
+            f"Content-Type: application/json\r\n\r\n").encode() + json.dumps(payload).encode() + b"\r\n"
+    for i, f in enumerate(files):
+        with open(f, "rb") as fh:
+            body += (f"--{boundary}\r\nContent-Disposition: form-data; name=\"files[{i}]\"; "
+                     f"filename=\"{os.path.basename(f)}\"\r\nContent-Type: image/png\r\n\r\n").encode() + fh.read() + b"\r\n"
+    body += f"--{boundary}--\r\n".encode()
+    sep = "&" if "?" in hook else "?"
+    return json.loads(http(hook + sep + "wait=true&with_components=true", data=body, method="POST",
+                           headers={"Content-Type": f"multipart/form-data; boundary={boundary}"}))["id"]
+
+def _delete_message(hook, message_id):
+    try:
+        http(f'{hook.split("?")[0]}/messages/{message_id}', method="DELETE")
+    except urllib.error.URLError:
+        pass
+
+def render_banner(cards):
+    """Banner PNG in .patchnotes/, or None (text heading instead) if Pillow or the fonts aren't available."""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import images
+        os.makedirs(WORK_DIR, exist_ok=True)
+        k = cards["counts"]
+        return images.banner(os.path.join(WORK_DIR, "banner.png"),
+                             parse_time(cards["profileUpdatedAt"]).strftime("%-d %B %Y"), cards["totalMods"],
+                             k["updated"], k["new"], k["removed"])
+    except Exception as e:      # missing Pillow, font download failed, ...
+        print(f"warning: no banner image ({e}); using a text heading", file=sys.stderr)
+        return None
 
 def cmd_post(args):
     state = load_state()
@@ -609,22 +784,34 @@ def cmd_post(args):
     lp = state["lastPatch"]
     if lp["discord"].get("posted") and not args.force:
         sys.exit(f"already posted ({lp['discord'].get('messageId')}); use --force to post again")
-    payload = build_payload(state)
-    if HL_PLACEHOLDER in payload["embeds"][0]["description"] and not args.force:
-        sys.exit("highlights are still the placeholder; write them in the patch note first")
+    if not lp.get("cardsFile"):
+        sys.exit("this patch has no cards file (it predates the card layout)")
+    with open(os.path.join(ROOT, lp["cardsFile"])) as f:
+        cards = json.load(f)
+    if not cards.get("summary") and not args.force:
+        sys.exit("the cards file has no summary yet; run `highlights` first")
+    messages = build_messages(state, cards, None if args.dry_run else render_banner(cards))
     if args.dry_run:
-        print(json.dumps(payload, indent=1, ensure_ascii=False))
+        print(json.dumps([{"components": c, "files": [os.path.basename(f) for f in fs], "ping": p}
+                          for c, fs, p in messages], indent=1, ensure_ascii=False))
         return
     hook = env(*WEBHOOK_ENV)
     if not hook:
         sys.exit("no webhook: set %s" % " or ".join(WEBHOOK_ENV))
-    sep = "&" if "?" in hook else "?"
-    resp = json.loads(http(hook + sep + "wait=true", data=json.dumps(payload).encode(),
-                           headers={"Content-Type": "application/json"}, method="POST"))
-    lp["discord"] = {"posted": True, "messageId": resp.get("id"),
+    role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))
+    ids = []
+    try:
+        for comps, files, ping in messages:
+            ids.append(_post_message(hook, comps, files, role if ping else None))
+    except urllib.error.HTTPError as e:
+        for mid in ids:                 # all or nothing, so the retry doesn't leave half a post behind
+            _delete_message(hook, mid)
+        sys.exit(f"Discord refused message {len(ids) + 1} of {len(messages)}: HTTP {e.code} "
+                 f"{e.read()[:500].decode('utf-8', 'replace')}")
+    lp["discord"] = {"posted": True, "messageId": ids[0], "messageIds": ids,
                      "postedAt": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")}
     save_state(state)
-    print(json.dumps({"status": "posted", "messageId": resp.get("id")}))
+    print(json.dumps({"status": "posted", "messages": len(ids), "messageIds": ids}))
 
 
 def main():
@@ -633,7 +820,7 @@ def main():
     p = sub.add_parser("check"); p.set_defaults(fn=cmd_check)
     p.add_argument("--record", action="store_true", help="record this check; keepalive when due")
     p = sub.add_parser("highlights"); p.set_defaults(fn=cmd_highlights)
-    p.add_argument("--original", required=True, help="copy of the patch note from before the AI edit")
+    p.add_argument("--original", required=True, help="copy of the cards file as prepare wrote it")
     p = sub.add_parser("prepare"); p.set_defaults(fn=cmd_prepare)
     p.add_argument("--backfill-days", type=float, default=0,
                    help="first run only: treat versions released in the last N days as this patch")

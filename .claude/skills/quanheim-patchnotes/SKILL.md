@@ -22,32 +22,29 @@ Commit straight to `main`. This repo only holds generated data.
    - `mods-changed`: run `python3 tools/patchnotes.py prepare` and continue.
    - `no-baseline`: first run. Run `python3 tools/patchnotes.py prepare --backfill-days 3` and continue.
 3. `prepare` prints the patch file path and a list of changes. Open the patch file.
-4. Write the highlights: replace `_Highlights pending._` between `<!-- highlights:start -->` and
-   `<!-- highlights:end -->`. They become the Discord embed, so lay them out for easy reading:
-   - 3–6 highlights. Each one is a `### ` heading with one emoji and a short headline (2–5 words, no full stop),
-     then a blank line, then its text as `- ` bullets: one bullet of one or two plain sentences naming the mod,
-     or a few short bullets if it covers several mods. Every line under a heading is a bullet, so the text lines
-     up in Discord. Leave a blank line between highlights. Example:
-
-     ```
-     ### 🛣️ Build roads with the hoe
-
-     - **MyDirtyHoe** adds a Terrain Road tool: click points along a route and it lays a smooth, evenly sloped road.
-     ```
-   - Bold the mod name the first time it appears in each highlight.
-   - Write for players: what they'll notice in game, not how the code changed.
-   - Most noticeable gameplay changes first. Group small fixes, library and framework bumps into one closing
-     highlight (e.g. `### 🔧 Fixes and framework updates`), one bullet per mod.
-   - Mention every added or removed mod.
-   - Framework mods (BepInEx, Jotunn) don't have their notes quoted in the patch file. Use the `notes` that
-     `prepare` printed for them, and summarise in one short line what players would care about.
-   - Only state what the notes say. No invented numbers or features. If a mod published no notes, say so
-     rather than guessing.
-   - Keep it under 2,000 characters.
-   Don't edit the quoted notes below the highlights.
+4. Write the Discord wording in the cards file `prepare` printed (`cardsFile`, `patchnotes/<date>.discord.json`).
+   It already holds every fact (mods, versions, links, icons, colours) and, under each version step and framework
+   entry, the raw patch notes to summarise (`notes`). Fill in only these four kinds of field and change nothing else.
+   The layout they go into is in `docs/discord-layout.md`.
+   - **`summary`**: 2–5 short bullets for the summary card, most noticeable gameplay changes first. Each starts with
+     one emoji and is one plain sentence, written for players, naming the mod in bold (`**QuanPieces**`). Mention
+     every added or removed mod. If the patch changes only one mod, the summary isn't shown, so one bullet is enough.
+   - **each card's `emoji`**: one emoji that fits the mod (🌱 farming, 🗡️ weapons, 🛢️ storage, 🛣️ building…).
+   - **each step's `bullets`**: 1–3 short bullets for that version step only, from that step's `notes`. Players'
+     point of view: what changes in game, not how the code changed. Plain sentences, no headings, no mod name
+     (the card shows it). Removed, rolled-back, enabled or disabled mods come with a bullet already; leave it.
+     New mods: one bullet saying what the mod adds, from its description in `notes`.
+   - **each framework entry's `line`**: one short line saying what changed, from its `notes`, e.g.
+     "Bug fixes for mod authors" or "Windows security fix and Apple Silicon support".
+   - Only state what the notes say. No invented numbers or features. If a step's `notes` are empty, leave its
+     `bullets` empty and simple text is filled in.
+   - Keep it short: the whole post has to fit Discord's limits, and long cards push the post onto more messages.
+   Then run `python3 tools/patchnotes.py highlights --original <a copy of the cards file from before your edit>`.
+   It keeps only the wording, restores every fact and copies the summary into the patch note's Highlights section.
+   Don't edit the patch note yourself.
 5. `git add -A && git commit -m "Patch notes <date>: <n> mod changes" && git push origin main`.
    Push before posting, so the link in Discord already works.
-6. `python3 tools/patchnotes.py post`. It reads `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` (and `VALHEIM_PATCH_DISCORD_GROUP_TAG`, if set, to ping that role)
+6. `python3 tools/patchnotes.py post` (needs Pillow for the banner image: `pip install pillow`). It reads `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` (and `VALHEIM_PATCH_DISCORD_GROUP_TAG`, if set, to ping that role)
    from the environment; the older `DISCORD_WEBHOOK_URL` / `DISCORD_ROLE_ID` names also work. Never print their values. It records the message ID
    in `modlist.json`. Then commit `Record Discord post` and push.
    - If the webhook variable isn't set or the post fails, leave it. The next run sees `unposted` and retries.

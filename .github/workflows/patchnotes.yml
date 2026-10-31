@@ -72,8 +72,10 @@ jobs:
               cat .patchnotes/prepare.json
               file=$(python3 -c 'import json; print(json.load(open(".patchnotes/prepare.json")).get("patchFile") or "")')
               if [ -n "$file" ]; then
-                cp "$file" .patchnotes/original.md
+                cards=$(python3 -c 'import json; print(json.load(open(".patchnotes/prepare.json"))["cardsFile"])')
+                cp "$cards" .patchnotes/original.discord.json   # the facts, restored after Claude's edit
                 echo "file=$file" >> "$GITHUB_OUTPUT"
+                echo "cards=$cards" >> "$GITHUB_OUTPUT"
               fi
               ;;
             config-only)
@@ -89,18 +91,20 @@ jobs:
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           FILE: ${{ steps.prep.outputs.file }}
+          CARDS: ${{ steps.prep.outputs.cards }}
         run: |
           if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
             echo "::warning::CLAUDE_CODE_OAUTH_TOKEN secret not set; using simple highlights"
             exit 1
           fi
           npm install -g --silent @anthropic-ai/claude-code
-          claude -p "Write the highlights for the Quanheim patch note at $FILE.
+          claude -p "Write the Discord wording for the Quanheim patch in $CARDS.
           First read .claude/skills/quanheim-patchnotes/SKILL.md and follow its step 4 exactly.
-          Then read the patch note. The output of prepare is in .patchnotes/prepare.json: it includes the
-          notes for framework mods (BepInEx, Jotunn), which aren't quoted in the patch note.
-          Only replace _Highlights pending._ between the highlight markers. Don't change anything else in that
-          file, don't touch any other file and don't run commands. Reply with one line when done." \
+          The cards file already holds every fact and, under each version step and framework entry, the raw
+          patch notes to summarise ('notes'). The full patch note is $FILE if you need more context.
+          Only fill in 'summary', each card's 'emoji', each step's 'bullets' and each framework entry's 'line'.
+          Don't change anything else, don't touch any other file and don't run commands.
+          Reply with one line when done." \
             --allowedTools "Read,Edit" --max-turns 25
 
       - name: Commit, push and post
@@ -130,8 +134,8 @@ jobs:
           }
 
           if [ -n "$FILE" ]; then
-            # keeps only the highlights from Claude's edit; fills in simple ones if it wrote none
-            python3 tools/patchnotes.py highlights --original .patchnotes/original.md
+            # keeps only Claude's wording in the cards file, restores every fact, fills any gaps with simple text
+            python3 tools/patchnotes.py highlights --original .patchnotes/original.discord.json
             n=$(python3 -c 'import json; print(json.load(open(".patchnotes/prepare.json"))["changes"])')
             commit "Patch notes $(basename "$FILE" .md): $n mod changes"
             if [ "$CLAUDE_OUTCOME" = failure ]; then
@@ -143,12 +147,14 @@ jobs:
             commit "Profile synced: no mod changes"
           fi
 
-          # post anything committed but not yet on Discord (this run's patch, or a failed earlier post)
+          # post anything committed but not yet on Discord (this run's patch, or a failed earlier post).
+          # Pillow draws the banner; without it the banner becomes a text heading.
           unposted=$(python3 -c 'import json; s=json.load(open("modlist.json")); lp=s.get("lastPatch") or {}; print("yes" if lp and not lp["discord"].get("posted") else "")')
           if [ -n "$unposted" ]; then
             if [ -z "$VALHEIM_PATCH_DISCORD_WEBHOOK_URL" ]; then
               echo "::warning::VALHEIM_PATCH_DISCORD_WEBHOOK_URL secret not set; patch not posted"
-            elif python3 tools/patchnotes.py post; then
+            elif python3 -m pip install --quiet --user --break-system-packages pillow >/dev/null 2>&1 || true;
+                 python3 tools/patchnotes.py post; then
               commit "Record Discord post"
             else
               echo "::warning::Discord post failed; the next run will retry"

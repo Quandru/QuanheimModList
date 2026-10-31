@@ -6,6 +6,9 @@ with patch notes for every change.
 - **[`modlist.json`](modlist.json):** every mod in the pack with its version, whether it's enabled, and where it's
   installed from (Thunderstore or Hexium). Mods changed in the most recent patch carry a `lastPatch` entry
   (`change`, `from`, `to`). Unchanged mods don't.
+- **Discord:** each patch is posted as a banner, a summary and one card per mod, laid out as in
+  [`docs/discord-layout.md`](docs/discord-layout.md). The wording comes from `patchnotes/<date>.discord.json`, next to
+  each patch note.
 - **[`patchnotes/`](patchnotes/):** one file per patch, named by the profile's sync time (`YYYY-MM-DD-HHMM.md`).
   Each starts with highlights and an at-a-glance table, followed by each mod's own patch notes quoted from its
   changelog. Modding frameworks (BepInEx, Jotunn) are summarised in the highlights and linked, not quoted:
