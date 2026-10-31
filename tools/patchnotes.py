@@ -717,7 +717,7 @@ def build_messages(state, cards, banner_path=None):
             f' `{f["label"]}`: {f["line"]}' for f in cards["framework"]), PURPLE))
     tail += [_image("rune-rule.png"),
              _container(f'-# {cards["totalMods"]} mods · Gale profile {PROFILE_CODE} · synced '
-                        f'{synced.strftime("%-d %b, %H:%M")} UTC\n-# {LEGEND}')]
+                        f'{synced.strftime("%-d %b, %H:%M")} UTC\n\n-# {LEGEND}')]      # blank line: legend sits apart
 
     spacer = _image("spacer.png")
     base_n, base_c = _size(spacer)
