@@ -690,11 +690,12 @@ def card_text(card):
     text = "\n".join(lines)
     return text if len(text) <= 3000 else text[:2990].rsplit("\n", 1)[0] + "\n- …"
 
-BANNER_PATH = [None]
+GENERATED = {}          # attachment name -> generated file for this post (banner.png, server-banner.png)
 
 def build_messages(state, cards, banner_path=None):
     """List of (components, [(attachment name, source file)], ping) per message, following docs/discord-layout.md."""
-    BANNER_PATH[0] = banner_path
+    GENERATED.clear()
+    GENERATED["banner.png"] = banner_path
     lp = state["lastPatch"]
     url = f"{REPO_URL}/blob/{BRANCH}/{lp['file']}"
     role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))
@@ -712,10 +713,15 @@ def build_messages(state, cards, banner_path=None):
         head.append(_container(link))
     else:
         head.append(_container("\n".join("- " + b for b in cards["summary"]) + "\n\n" + link))
-    head.append(_image("rune-rule.png"))
     alert = pending_server_alert()
-    if alert:                                    # the server's game version changed: first card, before the mods
-        head.append(server_card(alert))
+    if alert:                                    # the server's game version changed: the red image under the header
+        img = render_server_banner(alert, name_line=False) if banner_path else None
+        if img:
+            GENERATED["server-banner.png"] = img
+            head.insert(2, _image("server-banner.png"))
+        else:                                    # no image library: a plain card in the same place
+            head.insert(2, server_card(alert))
+    head.append(_image("rune-rule.png"))
     body = [_container(card_text(c), CARD_COLOR.get(c["change"], YELLOW), c.get("icon")) for c in cards["cards"]]
     tail = []
     if cards["framework"]:
@@ -724,8 +730,7 @@ def build_messages(state, cards, banner_path=None):
             f' `{f["label"]}`: {f["line"]}' for f in cards["framework"]), PURPLE))
     tail += [_image("rune-rule.png"),
              _container(f'-# {cards["totalMods"]} mods · Gale profile {PROFILE_CODE} · synced '
-                        f'{synced.strftime("%-d %b, %H:%M")} UTC\n\n-# {LEGEND}' +    # blank line: legend sits apart
-                        (" · 🟦 Game update" if alert else ""))]
+                        f'{synced.strftime("%-d %b, %H:%M")} UTC\n\n-# {LEGEND}')]      # blank line: legend sits apart
 
     spacer = _image("spacer.png")
     base_n, base_c = _size(spacer)
@@ -761,7 +766,7 @@ def _unique_images(comps):
             seen[stem] = seen.get(stem, 0) + 1
             unique = f"{stem}-{seen[stem]}.png"
             it["media"]["url"] = f"attachment://{unique}"
-            files.append((unique, BANNER_PATH[0] if name == "banner.png" else os.path.join(ASSETS, name)))
+            files.append((unique, GENERATED.get(name) or os.path.join(ASSETS, name)))
     return comps, files
 
 def _post_message(hook, comps, files, ping_role):
@@ -865,7 +870,20 @@ def mark_server_alert_posted(message_id):
                        postedAt=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"))
     save_server_state(st)
 
+def render_server_banner(alert, name_line):
+    """The red Server Update image in .patchnotes/, or None if Pillow or the fonts aren't available."""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import images
+        os.makedirs(WORK_DIR, exist_ok=True)
+        return images.server_banner(os.path.join(WORK_DIR, "server-banner.png"), alert["to"], alert.get("from"),
+                                    name_line=name_line)
+    except Exception as e:
+        print(f"warning: no server banner image ({e}); using a plain card", file=sys.stderr)
+        return None
+
 def server_card(alert):
+    """Fallback when the red image can't be drawn."""
     was = f' (was {alert["from"]})' if alert.get("from") else ""
     return _container(f'### 🛡️ Valheim game update\nThe server has been updated to **Valheim {alert["to"]}**{was}.\n'
                       f'- Update Valheim in Steam before you join.', BLUE)
@@ -914,7 +932,12 @@ def cmd_post_server(args):
     role = re.sub(r"^<@&|>$", "", env(*ROLE_ENV))
     ping = f"<@&{role}> the Valheim server has been updated." if role.isdigit() else "The Valheim server has been updated."
     spacer = _image("spacer.png")
-    comps, files = _unique_images([_text(ping), spacer, server_card(alert), spacer])
+    GENERATED.clear()
+    img = None if args.dry_run else render_server_banner(alert, name_line=True)
+    if img:
+        GENERATED["server-banner.png"] = img
+    comps, files = _unique_images([_text(ping), spacer, _image("server-banner.png") if img else server_card(alert),
+                                   spacer])
     if args.dry_run:
         print(json.dumps(comps, indent=1, ensure_ascii=False))
         return
