@@ -13,7 +13,25 @@ The fix is a small Azure Function that asks GitHub to run the workflow (`workflo
 keeps no logic of its own: all checking, writing and posting stays in this repo. If the function stops, the GitHub
 schedule is still there as a slower backup.
 
-It lives in its own ADO project, with Bicep for the Azure resources and an ADO pipeline that deploys both.
+It's the first function in a general **"Gaming" Function App**, which later gaming jobs can join. Bicep defines
+the Azure resources and an ADO pipeline deploys both.
+
+## Names
+
+| Thing | Name |
+|---|---|
+| ADO organization / project | `quandru` / **Azure Functions** |
+| ADO repo | **`game-quanheim-patchnote-dispatcher`**. It already has a starter `README.md`. It holds the whole Gaming Function App, so a broader name such as `game-functions` would suit it; if the owner renames it, use the new name throughout. |
+| Azure resource group | **`Azure_Functions`** (UK South), shared with other function work |
+| Function App | `func-gaming-<suffix>`, one app for all gaming functions |
+| This function | **`valheim_quanheim_patchnote_dispatcher`** |
+| Service connection | `sc-azure-functions` |
+| Key Vault secret | `valheim-quanheim-github-dispatch-token` |
+| App setting prefix for this function | `QUANHEIM_` |
+
+**Hierarchy:** resource group → Function App ("Gaming": one plan, runtime, identity and set of settings, deployed as
+one unit) → functions inside it. Every deploy ships every function in the app, so the repo holds the whole app.
+Each function gets its own module, and its settings carry a per-function prefix.
 
 ## Decisions already made
 
@@ -21,10 +39,10 @@ It lives in its own ADO project, with Bicep for the Azure resources and an ADO p
 |---|---|---|
 | Infrastructure as code | **Bicep** | Azure-only, no state backend to host or lock. |
 | Hosting | **Flex Consumption** (Linux) | Microsoft's current serverless plan. Linux Consumption retires in 2028. Usage sits well inside the monthly free grant. |
-| Language | **Python 3.12** (v2 programming model) | Fastest cold start of the options, and the same language as `tools/patchnotes.py`. |
+| Language | **Python 3.12** (v2 programming model, one blueprint per function) | Fastest cold start of the options, and the same language as `tools/patchnotes.py`. Every function in the Gaming app shares it. |
 | Function logic | **Dispatch only** | Nothing to keep in step with the repo. |
 | GitHub credential | **Fine-grained PAT**, this repo only, **Actions: Read and write** only | Can start workflow runs and nothing else. GitHub emails before it expires. |
-| Where the PAT lives | **Key Vault** (RBAC), read by the function's managed identity through a Key Vault reference | No session, pipeline or log ever sees it. The owner puts it in by hand. |
+| Where the PAT lives | **Key Vault** (RBAC, Standard tier), read by the Function App's managed identity through a Key Vault reference | No session, pipeline or log ever sees it. The owner puts it in by hand. Cost: about $0.03 per 10,000 operations and no monthly fee, so effectively nothing. |
 | Pipeline identity | **ADO service connection with workload identity federation**, scoped to one resource group | No secret, no expiry. Separate from the MCP's app registration. |
 | Storage auth | **Managed identity** (`AzureWebJobsStorage__accountName`), shared key access off where Flex allows | No storage keys in app settings. |
 | Monitoring | Application Insights on a Log Analytics workspace with a small daily cap, plus one alert rule that emails on dispatch failures | Otherwise a dead dispatcher only shows up as slow patch notes. |
@@ -32,20 +50,21 @@ It lives in its own ADO project, with Bicep for the Azure resources and an ADO p
 ## Target design
 
 ```
-Azure (resource group rg-quanheim-patchnotes)
+Azure (resource group Azure_Functions)
 ┌────────────────────────────────────────────────────────────────────────────┐
-│ Function App (Flex Consumption, Python 3.12, system-assigned identity)     │
+│ Function App "Gaming" (Flex Consumption, Python 3.12, system identity)     │
+│  function valheim_quanheim_patchnote_dispatcher                            │
 │   timer "0 */5 * * * *" ──► POST api.github.com/repos/Quandru/              │
 │                               QuanheimModList/actions/workflows/            │
 │                               patchnotes.yml/dispatches  {"ref":"main"}     │
-│   app setting GITHUB_DISPATCH_TOKEN = @Microsoft.KeyVault(...)              │
+│   app setting QUANHEIM_GITHUB_TOKEN = @Microsoft.KeyVault(...)              │
 │                                                                            │
-│ Key Vault (RBAC)          secret github-dispatch-token  (set by owner)     │
+│ Key Vault (RBAC)  secret valheim-quanheim-github-dispatch-token (by owner) │
 │ Storage account           host storage + Flex deployment container         │
 │ Log Analytics + App Insights   alert rule ──► action group ──► email       │
 └────────────────────────────────────────────────────────────────────────────┘
                      ▲ deploys (Bicep + code)
-ADO project Quanheim / repo patchnotes-dispatcher / pipeline (service connection, WIF)
+ADO project Azure Functions / repo game-quanheim-patchnote-dispatcher / pipeline (sc-azure-functions, WIF)
 ```
 
 Role assignments, all made by the Bicep:
@@ -62,21 +81,20 @@ Do these before starting the build session. Never paste a token, secret or passw
 
 ### A1. Azure
 
-1. In the personal tenancy's subscription, create the resource group `rg-quanheim-patchnotes` in **UK South**.
-   Check Flex Consumption is offered there (`az functionapp list-flexconsumption-locations -o table`). If not,
-   pick the nearest region that offers it.
+1. ✅ Resource group **`Azure_Functions`** exists in **UK South**. The pipeline's validate stage checks Flex
+   Consumption is offered there (`az functionapp list-flexconsumption-locations`).
 2. Note your own **Object ID** (Entra admin center → Users → you). It's the Bicep's `ownerObjectId`, so you can
    put the GitHub token into Key Vault. Not secret.
 
 ### A2. Azure DevOps
 
-1. In the existing ADO org (Entra-backed), create the project **Quanheim** (private).
-2. In it, create an **empty** Git repo **patchnotes-dispatcher**: no README and no .gitignore, so the first push is
-   clean. The MCP can't create repos.
+1. ✅ Project **Azure Functions** exists in the `quandru` org.
+2. ✅ Repo **`game-quanheim-patchnote-dispatcher`** exists, with a starter `README.md`. The session clones it and
+   replaces the README. Optionally rename it to something app-wide first, such as `game-functions`.
 3. Create the service connection: **Project settings → Service connections → New → Azure Resource Manager →
    Workload identity federation (automatic)**.
-   - Scope: **Resource group** `rg-quanheim-patchnotes`
-   - Name: **`sc-quanheim-patchnotes`**
+   - Scope: **Resource group** `Azure_Functions`
+   - Name: **`sc-azure-functions`**
    - Leave "Grant access permission to all pipelines" **off**. The first pipeline run asks you to approve it once.
 4. That service connection gets **Contributor** on the resource group. The Bicep also creates role assignments,
    so give its service principal one more role:
@@ -88,7 +106,7 @@ Do these before starting the build session. Never paste a token, secret or passw
 
 ### A3. App registration for the ADO MCP (claude.ai connector)
 
-The remote ADO MCP server (`https://mcp.dev.azure.com/{org}`) signs in with Entra ID. Claude.ai can't register
+The remote ADO MCP server (`https://mcp.dev.azure.com/quandru`) signs in with Entra ID. Claude.ai can't register
 itself with Entra automatically, so it needs a pre-made app registration. Microsoft documents this for Claude Code
 on a local machine, and for Cursor's cloud agents with a web redirect and client secret. This is the cloud
 equivalent for claude.ai.
@@ -112,7 +130,7 @@ equivalent for claude.ai.
 6. **Grant admin consent**.
 7. In claude.ai: **Settings → Connectors → Add custom connector**:
    - Name: `Azure DevOps`
-   - URL: `https://mcp.dev.azure.com/{org}`
+   - URL: `https://mcp.dev.azure.com/quandru`
    - **Advanced settings**: OAuth Client ID = the app's Application (client) ID; Client Secret = the value from step 4.
 
    Then **Connect** and sign in with your Entra account. The connector acts as you, so it can only do what both
@@ -140,7 +158,7 @@ The MCP has no tools to push code, so git needs its own credential.
    - Permissions: **Actions: Read and write** (Metadata: read is added automatically). Nothing else.
    - Expiry: up to a year. GitHub emails before it expires.
 2. Once the pipeline has created the Key Vault: Azure portal → Key Vault → **Secrets → Generate/Import**.
-   Name **`github-dispatch-token`**, value = the token.
+   Name **`valheim-quanheim-github-dispatch-token`**, value = the token.
 
 ## Part B: build steps (for the Claude session)
 
@@ -150,30 +168,36 @@ never print or ask for secret values.
 ### B0. Orient
 
 - Read this plan, `README.md` and `.github/workflows/patchnotes.yml` in `Quandru/QuanheimModList`.
-- With the ADO MCP: `core_list_projects` to find **Quanheim**, then `repo_repository` → `list`/`get` to confirm
-  **patchnotes-dispatcher** exists and is empty.
-- Confirm git access: `git ls-remote https://dev.azure.com/{org}/Quanheim/_git/patchnotes-dispatcher`. Use
+- With the ADO MCP: `core_list_projects` to find **Azure Functions**, then `repo_repository` → `get` for
+  **game-quanheim-patchnote-dispatcher** (or its new name). It holds only the starter README.
+- Confirm git access, then clone:
+  `git clone "https://dev.azure.com/quandru/Azure%20Functions/_git/game-quanheim-patchnote-dispatcher"`. Use
   `ADO_GIT_PAT` through a credential helper or extra header, never in the remote URL or a committed file.
 
 ### B1. Write the repo
 
 ```
-patchnotes-dispatcher/
-├── README.md                  what it is, how to deploy, how to renew the GitHub token
+game-quanheim-patchnote-dispatcher/          (the whole Gaming Function App)
+├── README.md                                what's in the app, how to deploy, how to add a function,
+│                                            secrets and their renewal
 ├── azure-pipelines.yml
 ├── infra/
 │   ├── main.bicep
-│   └── main.bicepparam        location, baseName, ownerObjectId, alertEmail, githubRepo
+│   └── main.bicepparam                      location, appName (gaming), ownerObjectId, alertEmail
 └── src/
-    ├── function_app.py
+    ├── function_app.py                      registers each function's blueprint, nothing else
+    ├── valheim/
+    │   ├── __init__.py
+    │   └── quanheim_patchnote_dispatcher.py
     ├── host.json
-    └── requirements.txt       azure-functions only
+    └── requirements.txt                     azure-functions only
 ```
 
-**`src/function_app.py`** (about 30 lines, Python v2 model):
-- One timer trigger, schedule `0 */5 * * * *`, `run_on_startup=False`, `use_monitor=False`.
-- Reads `GITHUB_DISPATCH_TOKEN`, `GITHUB_REPO` (default `Quandru/QuanheimModList`), `GITHUB_WORKFLOW`
-  (default `patchnotes.yml`) and `GITHUB_REF` (default `main`).
+**`src/valheim/quanheim_patchnote_dispatcher.py`** (about 30 lines, a `func.Blueprint`):
+- One timer trigger, function name **`valheim_quanheim_patchnote_dispatcher`**, schedule `0 */5 * * * *`,
+  `run_on_startup=False`, `use_monitor=False`.
+- Reads `QUANHEIM_GITHUB_TOKEN`, `QUANHEIM_GITHUB_REPO` (default `Quandru/QuanheimModList`),
+  `QUANHEIM_GITHUB_WORKFLOW` (default `patchnotes.yml`) and `QUANHEIM_GITHUB_REF` (default `main`).
 - `POST https://api.github.com/repos/{repo}/actions/workflows/{workflow}/dispatches` with JSON
   `{"ref": "main"}` and headers:
   - `Authorization: Bearer <token>`
@@ -192,7 +216,10 @@ The aim is a few MB a month.
 
 **`infra/main.bicep`**, following Microsoft's Flex Consumption Bicep samples
 (`Azure-Samples/azure-functions-flex-consumption-samples`):
-- Names from `baseName` plus `uniqueString(resourceGroup().id)`. Storage and Key Vault have name length limits.
+- Names from `appName` (`gaming`) plus `uniqueString(resourceGroup().id)`, e.g. `func-gaming-<suffix>`,
+  `kv-gaming-<suffix>`, `stgaming<suffix>`. Storage and Key Vault have name length limits. The resource group is
+  shared, so don't create or assume anything outside these resources.
+- Tag every resource `app: gaming-functions`.
 - Log Analytics workspace: `dailyQuotaGb: 1` and 30-day retention. Application Insights on it.
 - Storage account: StorageV2, TLS 1.2, no public blob access. `allowSharedKeyAccess: false` if the Flex deployment
   path works with it, otherwise note why not. A blob container for the Flex deployment package.
@@ -205,20 +232,25 @@ The aim is a few MB a month.
   - App settings:
     - `AzureWebJobsStorage__accountName`
     - `APPLICATIONINSIGHTS_CONNECTION_STRING`
-    - `GITHUB_REPO`, `GITHUB_WORKFLOW`, `GITHUB_REF`
-    - `GITHUB_DISPATCH_TOKEN = @Microsoft.KeyVault(SecretUri=https://<vault>.vault.azure.net/secrets/github-dispatch-token/)`
+    - `QUANHEIM_GITHUB_REPO`, `QUANHEIM_GITHUB_WORKFLOW`, `QUANHEIM_GITHUB_REF`
+    - `QUANHEIM_GITHUB_TOKEN = @Microsoft.KeyVault(SecretUri=https://<vault>.vault.azure.net/secrets/valheim-quanheim-github-dispatch-token/)`
       (no version, so it follows rotations).
-- Key Vault: RBAC authorization, soft delete on, purge protection off (it's a personal sandbox; say so in a comment).
+  - Keep each function's settings in its own Bicep variable or module block, so the next function adds a block
+    and doesn't edit this one.
+- Key Vault (Standard): RBAC authorization, soft delete on, purge protection off (it's a personal sandbox; say so
+  in a comment). One vault for the Gaming app. Prefix secret names with the function's area
+  (`valheim-quanheim-…`).
 - The role assignments in the table above, with `guid()` names so redeploys are idempotent.
 - Action group (email `alertEmail`), plus a scheduled query alert on App Insights.
-  - Condition: any `traces`/`exceptions` from the dispatcher at severity Error or above in the last 30 minutes.
+  - Condition: any `traces`/`exceptions` from the app at severity Error or above in the last 30 minutes. The
+    alert email names the failing function (`operation_Name`), so one rule covers future functions too.
   - Evaluate every 15 minutes, auto-mitigate on.
 - Outputs: function app name, Key Vault name, Key Vault URI.
 
 **`azure-pipelines.yml`**:
 - Trigger on `main`, for changes under `infra/`, `src/` and `azure-pipelines.yml`. Plus a manual run.
 - `pool: vmImage: ubuntu-latest`.
-- Variables: `serviceConnection: sc-quanheim-patchnotes`, `resourceGroup: rg-quanheim-patchnotes`.
+- Variables: `serviceConnection: sc-azure-functions`, `resourceGroup: Azure_Functions`.
 - **Validate** stage: `AzureCLI@2` runs `az bicep build` and `az deployment group what-if` (the what-if output is
   printed in the log).
 - **Deploy** stage:
@@ -229,24 +261,24 @@ The aim is a few MB a month.
     `az functionapp deployment source config-zip`. Use whichever works first time on Flex, and note it in the README.
 - Pin task major versions. No secrets in the YAML.
 
-Check: `az bicep build` is clean. The pipeline YAML parses. `function_app.py` passes a local unit test with a
+Check: `az bicep build` is clean. The pipeline YAML parses. The dispatcher passes a local unit test with a
 mocked HTTP call: 204 succeeds, the unresolved Key Vault string warns, 401 raises.
 
 ### B2. First push
 
-`git init -b main`, commit as the owner's choice of author name, push to the ADO repo. Then confirm with
+Commit on top of the starter README commit (replacing the README) and push to `main`. Then confirm with
 `repo_file` → `list_directory`.
 
 ### B3. Create and run the pipeline (MCP)
 
-- `pipelines_write` → `create_pipeline`: name `patchnotes-dispatcher`, repo `patchnotes-dispatcher`, path
+- `pipelines_write` → `create_pipeline`: name `gaming-functions`, repo `game-quanheim-patchnote-dispatcher`, path
   `/azure-pipelines.yml`.
 - `pipelines_write` → `run_pipeline`. The first run waits for the owner to **approve the service connection**
   (the "Permit" prompt on the run page); tell them.
 - Follow it with `pipelines_run` → `get` and `pipelines_build_log` → `get_content`. Fix and re-push until it's
   green. Expect "Key Vault reference unresolved" warnings in the function logs until A5.
 
-Check: both stages green. Resources exist. The function app shows the `timerDispatch` function.
+Check: both stages green. Resources exist. The Function App lists `valheim_quanheim_patchnote_dispatcher`.
 
 ### B4. Hand over A5, then verify end to end
 
