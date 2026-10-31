@@ -105,6 +105,10 @@ Do these before starting the build session. Never paste a token, secret or passw
 
 ### A3. App registration for the ADO MCP (claude.ai connector)
 
+✅ **Done 31 Oct 2026.** App registration `claude-ai-ado-mcp`, with both claude.ai redirect URIs. The owner granted all
+Azure DevOps MCP scopes, because the connector will be used beyond this build. The connector is connected. **The client
+secret expires 30 Oct 2028**: before then, create a new secret and paste it into the connector's settings.
+
 The remote ADO MCP server (`https://mcp.dev.azure.com/quandru`) signs in with Entra ID. Claude.ai can't register
 itself with Entra automatically, so it needs a pre-made app registration. Microsoft documents this for Claude Code
 on a local machine, and for Cursor's cloud agents with a web redirect and client secret. This is the cloud
@@ -305,8 +309,8 @@ Check: both stages green. Resources exist. The Function App lists `valheim_quanh
 
 ### B6. Hand back to the owner
 
-- Delete or let expire the A3 client secret and the A4 ADO PAT. They were only for the build.
-- Keep the connector if it's still useful. Otherwise remove it.
+- Delete or let expire the A4 ADO PAT; it was only for the build.
+- The A3 connector stays for general use. Its client secret expires 30 Oct 2028.
 - Reminders that remain: the GitHub token's expiry (GitHub emails), and the Claude token's
   (`CLAUDE_CODE_OAUTH_TOKEN_EXPIRES`, existing issue alert).
 
