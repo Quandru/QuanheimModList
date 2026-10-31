@@ -1,0 +1,18 @@
+name: Server query (test)
+
+# Manual check: does the Quanheim server answer Steam's server query from the internet, and what version does it
+# report? The address is read from the Gale profile's ServerConnect config, never stored here, and masked in the log.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  query:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Query the server (A2S_INFO)
+        run: python3 tools/server_query.py
