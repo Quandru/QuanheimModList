@@ -111,8 +111,14 @@ on a local machine, and for Cursor's cloud agents with a web redirect and client
 equivalent for claude.ai.
 
 1. Entra admin center → **Enterprise applications**: confirm **Azure DevOps MCP** (app ID
-   `2a72489c-aab2-4b65-b93a-a91edccf33b8`) is present in the tenant. If it isn't, follow Microsoft's
-   troubleshooting page ("Can't find the Azure DevOps MCP enterprise application in the tenant").
+   `2a72489c-aab2-4b65-b93a-a91edccf33b8`) is present in the tenant. In a tenant that hasn't used the remote
+   ADO MCP before, it won't be. Add it from Azure Cloud Shell (needs Application Admin or Global Admin):
+   ```bash
+   az ad sp create --id 2a72489c-aab2-4b65-b93a-a91edccf33b8
+   az rest --method get --url "https://graph.microsoft.com/v1.0/servicePrincipals(appId='2a72489c-aab2-4b65-b93a-a91edccf33b8')" --query "{name:displayName, enabled:accountEnabled}"
+   ```
+   This only creates Microsoft's service principal in the tenant; it grants nothing. Source: Microsoft's
+   troubleshooting page, "Can't find the Azure DevOps MCP enterprise application in the tenant".
 2. **App registrations → New registration**: name `claude-ai-ado-mcp`, single tenant.
 3. **Authentication → Add a platform/redirect URI → Web**, and add both:
    - `https://claude.ai/api/mcp/auth_callback`
