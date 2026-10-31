@@ -25,18 +25,19 @@ Commit straight to `main`. This repo only holds generated data.
 4. Write the highlights: replace `_Highlights pending._` between `<!-- highlights:start -->` and
    `<!-- highlights:end -->`. They become the Discord embed, so lay them out for easy reading:
    - 3–6 highlights. Each one is a `### ` heading with one emoji and a short headline (2–5 words, no full stop),
-     then a blank line, then one or two plain sentences naming the mod. Leave a blank line between highlights.
-     Example:
+     then a blank line, then its text as `- ` bullets: one bullet of one or two plain sentences naming the mod,
+     or a few short bullets if it covers several mods. Every line under a heading is a bullet, so the text lines
+     up in Discord. Leave a blank line between highlights. Example:
 
      ```
      ### 🛣️ Build roads with the hoe
 
-     **MyDirtyHoe** adds a Terrain Road tool: click points along a route and it lays a smooth, evenly sloped road.
+     - **MyDirtyHoe** adds a Terrain Road tool: click points along a route and it lays a smooth, evenly sloped road.
      ```
    - Bold the mod name the first time it appears in each highlight.
    - Write for players: what they'll notice in game, not how the code changed.
    - Most noticeable gameplay changes first. Group small fixes, library and framework bumps into one closing
-     highlight (e.g. `### 🔧 Fixes and framework updates`), using a short `- ` list if it covers several mods.
+     highlight (e.g. `### 🔧 Fixes and framework updates`), one bullet per mod.
    - Mention every added or removed mod.
    - Framework mods (BepInEx, Jotunn) don't have their notes quoted in the patch file. Use the `notes` that
      `prepare` printed for them, and summarise in one short line what players would care about.

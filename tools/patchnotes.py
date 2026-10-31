@@ -553,11 +553,18 @@ FIELD_ICON = {"updated": "⬆️", "added": "✨", "removed": "🗑️", "downgr
               "disabled": "⏸️", "source-changed": "🔀"}
 FIELD_BULLET = {"added": "✨", "enabled": "✅", "disabled": "⏸️"}
 
+LIST_START = re.compile(r"^\s*(?:[-*+]\s|\d+[.)]\s|#|>|-#\s)")
+
+def bulletize(text):
+    """Make every plain paragraph line a "- " bullet, so text under each heading lines up in Discord
+    (which ignores leading spaces and tabs). Headings, lists, quotes and subtext are left alone."""
+    return "\n".join(l if not l.strip() or LIST_START.match(l) else "- " + l.strip() for l in text.splitlines())
+
 def build_payload(state):
     lp = state["lastPatch"]
     with open(os.path.join(ROOT, lp["file"])) as f:
         md = f.read()
-    hl = md.split(HL_START, 1)[1].split(HL_END, 1)[0].strip()
+    hl = bulletize(md.split(HL_START, 1)[1].split(HL_END, 1)[0].strip())
     title = md.splitlines()[0].lstrip("# ").strip()
     url = f"{REPO_URL}/blob/{BRANCH}/{lp['file']}"
     if len(hl) > 3800:
