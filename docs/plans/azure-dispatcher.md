@@ -107,7 +107,9 @@ Do these before starting the build session. Never paste a token, secret or passw
 
 ✅ **Done 31 Oct 2026.** App registration `claude-ai-ado-mcp`, with both claude.ai redirect URIs. The owner granted all
 Azure DevOps MCP scopes, because the connector will be used beyond this build. The connector is connected. **The client
-secret expires 30 Oct 2028**: before then, create a new secret and paste it into the connector's settings.
+secret expires 30 Oct 2028**: before then, create a new secret and paste it into the connector's settings. Verified from a cloud session:
+the connector shows up as **`Home_ADO`** (tools `mcp__Home_ADO__*`), lists the projects and sees the empty
+`gaming-functions` repo. The local-session fallback below isn't needed.
 
 The remote ADO MCP server (`https://mcp.dev.azure.com/quandru`) signs in with Entra ID. Claude.ai can't register
 itself with Entra automatically, so it needs a pre-made app registration. Microsoft documents this for Claude Code
