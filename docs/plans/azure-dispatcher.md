@@ -21,7 +21,7 @@ the Azure resources and an ADO pipeline deploys both.
 | Thing | Name |
 |---|---|
 | ADO organization / project | `quandru` / **Azure Functions** |
-| ADO repo | **`game-quanheim-patchnote-dispatcher`**. It already has a starter `README.md`. It holds the whole Gaming Function App, so a broader name such as `game-functions` would suit it; if the owner renames it, use the new name throughout. |
+| ADO repo | **`gaming-functions`**: empty, holds the whole Gaming Function App |
 | Azure resource group | **`Azure_Functions`** (UK South), shared with other function work |
 | Function App | `func-gaming-<suffix>`, one app for all gaming functions |
 | This function | **`valheim_quanheim_patchnote_dispatcher`** |
@@ -64,7 +64,7 @@ Azure (resource group Azure_Functions)
 │ Log Analytics + App Insights   alert rule ──► action group ──► email       │
 └────────────────────────────────────────────────────────────────────────────┘
                      ▲ deploys (Bicep + code)
-ADO project Azure Functions / repo game-quanheim-patchnote-dispatcher / pipeline (sc-azure-functions, WIF)
+ADO project Azure Functions / repo gaming-functions / pipeline (sc-azure-functions, WIF)
 ```
 
 Role assignments, all made by the Bicep:
@@ -89,8 +89,7 @@ Do these before starting the build session. Never paste a token, secret or passw
 ### A2. Azure DevOps
 
 1. ✅ Project **Azure Functions** exists in the `quandru` org.
-2. ✅ Repo **`game-quanheim-patchnote-dispatcher`** exists, with a starter `README.md`. The session clones it and
-   replaces the README. Optionally rename it to something app-wide first, such as `game-functions`.
+2. ✅ Repo **`gaming-functions`** exists and is empty (not initialised), so the first push is clean.
 3. Create the service connection: **Project settings → Service connections → New → Azure Resource Manager →
    Workload identity federation (automatic)**.
    - Scope: **Resource group** `Azure_Functions`
@@ -169,15 +168,15 @@ never print or ask for secret values.
 
 - Read this plan, `README.md` and `.github/workflows/patchnotes.yml` in `Quandru/QuanheimModList`.
 - With the ADO MCP: `core_list_projects` to find **Azure Functions**, then `repo_repository` → `get` for
-  **game-quanheim-patchnote-dispatcher** (or its new name). It holds only the starter README.
+  **gaming-functions**. It's empty.
 - Confirm git access, then clone:
-  `git clone "https://dev.azure.com/quandru/Azure%20Functions/_git/game-quanheim-patchnote-dispatcher"`. Use
+  `git ls-remote "https://dev.azure.com/quandru/Azure%20Functions/_git/gaming-functions"` (empty output is fine). Use
   `ADO_GIT_PAT` through a credential helper or extra header, never in the remote URL or a committed file.
 
 ### B1. Write the repo
 
 ```
-game-quanheim-patchnote-dispatcher/          (the whole Gaming Function App)
+gaming-functions/                            (the whole Gaming Function App)
 ├── README.md                                what's in the app, how to deploy, how to add a function,
 │                                            secrets and their renewal
 ├── azure-pipelines.yml
@@ -266,12 +265,12 @@ mocked HTTP call: 204 succeeds, the unresolved Key Vault string warns, 401 raise
 
 ### B2. First push
 
-Commit on top of the starter README commit (replacing the README) and push to `main`. Then confirm with
+`git init -b main`, commit and push to `main` (the remote is empty). Then confirm with
 `repo_file` → `list_directory`.
 
 ### B3. Create and run the pipeline (MCP)
 
-- `pipelines_write` → `create_pipeline`: name `gaming-functions`, repo `game-quanheim-patchnote-dispatcher`, path
+- `pipelines_write` → `create_pipeline`: name `gaming-functions`, repo `gaming-functions`, path
   `/azure-pipelines.yml`.
 - `pipelines_write` → `run_pipeline`. The first run waits for the owner to **approve the service connection**
   (the "Permit" prompt on the run page); tell them.
