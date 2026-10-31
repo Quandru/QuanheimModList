@@ -1,6 +1,16 @@
 # Plan: Azure dispatcher for Quanheim patch notes
 
-**Status:** ready to build, once the prerequisites in [Part A](#part-a-prerequisites-done-by-the-repo-owner) are done.
+**Status:** ✅ **done, 31 Oct 2026.** Built in ADO repo `quandru/Azure Functions/gaming-functions` (pipeline
+`gaming-functions`). Function App `func-gaming-wdn4xb` and Key Vault `kv-gaming-wdn4xb` are in `Azure_Functions`. The first
+dispatched run (#7, 06:25 UTC) posted the 31 Oct patch with Claude-written highlights.
+
+**What differed from the plan:**
+- The subscription had to register the `Microsoft.Storage` and `Microsoft.KeyVault` resource providers first.
+- After the token went into Key Vault, a warm Flex instance kept the old empty value until the app was
+  **stopped and started**. A plain restart wasn't enough.
+- To fit the service connection's conditional RBAC role, the function's identity gets only Storage Blob Data Owner
+  (plus Key Vault Secrets User), not the five roles Microsoft's Flex sample assigns.
+- The free ADO tier has one hosted agent, so a run's Deploy job can queue for several minutes.
 **For:** a new Claude Code cloud session with the Azure DevOps (ADO) MCP connector and the `Quandru/QuanheimModList` repo.
 
 ## Why

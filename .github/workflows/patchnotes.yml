@@ -1,10 +1,14 @@
 name: Patch notes
 
-# Every 5 minutes: check the Gale profile. Most runs end there (a few seconds, no AI).
+# Check the Gale profile. Most runs end there (a few seconds, no AI).
 # When mods change: write the patch note, let Claude write the highlights, push, post to Discord.
+#
+# Runs are started every 5 minutes by an Azure Function (workflow_dispatch from the "gaming-functions" ADO
+# project), because GitHub only runs free public-repo schedules every few hours. The hourly schedule below is
+# just a fallback in case that dispatcher stops.
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
     inputs:
       test_token_alert:

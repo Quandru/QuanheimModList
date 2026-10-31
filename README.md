@@ -25,7 +25,10 @@ with patch notes for every change.
 ## Automation 
 
 A GitHub Action ([`.github/workflows/patchnotes.yml`](.github/workflows/patchnotes.yml)) runs every 5 minutes.
-Most runs only check the profile and stop. When mods change, it prepares the patch note, runs Claude Code
+An Azure Function starts it (a `workflow_dispatch`), because GitHub's own schedule for free public repos only
+runs every few hours. The function is `valheim_quanheim_patchnote_dispatcher` in the Gaming Function App, built and
+deployed from the private ADO repo `quandru/Azure Functions/gaming-functions`. The workflow's own hourly schedule is a
+fallback in case the dispatcher stops. Most runs only check the profile and stop. When mods change, it prepares the patch note, runs Claude Code
 (signed in with a Claude subscription token) to write the highlights, pushes, and posts to Discord. If Claude
 can't run, simple highlights are filled in so the patch still goes out.
 
@@ -44,6 +47,10 @@ Repository secrets (Settings → Secrets and variables → Actions):
 | `CLAUDE_CODE_OAUTH_TOKEN_EXPIRES` | When that token expires, as `YYYY-MM-DD`. Update it with the token. |
 | `VALHEIM_PATCH_DISCORD_WEBHOOK_URL` | The Discord webhook to post to. |
 | `VALHEIM_PATCH_DISCORD_GROUP_TAG` | Optional: the ID of the role to ping. |
+
+The dispatcher has its own credential: a fine-grained GitHub token (Actions: Read and write on this repo only),
+stored as `valheim-quanheim-github-dispatch-token` in the Gaming app's Key Vault. GitHub emails before it expires;
+renewal steps are in the `gaming-functions` README.
 
 The steps live in [`.claude/skills/quanheim-patchnotes/SKILL.md`](.claude/skills/quanheim-patchnotes/SKILL.md).
 The mechanics live in [`tools/patchnotes.py`](tools/patchnotes.py).
