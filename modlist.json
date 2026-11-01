@@ -3,25 +3,30 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-01T01:08:32.768819Z"
+    "updatedAt": "2026-11-01T15:29:33.415682Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-01-0108.md",
-    "profileUpdatedAt": "2026-11-01T01:08:32.768819Z",
-    "previousProfileUpdatedAt": "2026-10-31T06:26:40.740984Z",
+    "file": "patchnotes/2026-11-01-1529.md",
+    "profileUpdatedAt": "2026-11-01T15:29:33.415682Z",
+    "previousProfileUpdatedAt": "2026-11-01T01:08:32.768819Z",
     "counts": {
-      "updated": 2
+      "removed": 2
     },
-    "removed": [],
+    "removed": [
+      {
+        "name": "OdinPlus-TeleportCreatures",
+        "version": "0.3.3"
+      },
+      {
+        "name": "xtavim-BetterTames",
+        "version": "0.9.0"
+      }
+    ],
     "discord": {
-      "posted": true,
-      "messageId": "1566258117786734703",
-      "messageIds": [
-        "1566258117786734703"
-      ],
-      "postedAt": "2026-11-01T01:10:35+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-01-0108.discord.json"
+    "cardsFile": "patchnotes/2026-11-01-1529.discord.json"
   },
   "mods": [
     {
@@ -253,12 +258,7 @@
       "version": "2.3.4",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "2.3.3",
-        "to": "2.3.4"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/"
     },
     {
       "name": "MathiasDecrock-PlanBuild",
@@ -331,13 +331,6 @@
       "url": "https://thunderstore.io/c/valheim/p/OdinPlus/TeleportCarts/"
     },
     {
-      "name": "OdinPlus-TeleportCreatures",
-      "version": "0.3.3",
-      "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/OdinPlus/TeleportCreatures/"
-    },
-    {
       "name": "plumga-Clutter",
       "version": "0.1.7",
       "enabled": true,
@@ -370,12 +363,7 @@
       "version": "1.2.2",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.2.1",
-        "to": "1.2.2"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/"
     },
     {
       "name": "R3ddTeamRules-Warmth",
@@ -509,13 +497,6 @@
       "enabled": true,
       "source": "thunderstore",
       "url": "https://thunderstore.io/c/valheim/p/Vismeneer/MoreMissingPieces/"
-    },
-    {
-      "name": "xtavim-BetterTames",
-      "version": "0.9.0",
-      "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/xtavim/BetterTames/"
     },
     {
       "name": "ZenDragon-Zen_ModLib",

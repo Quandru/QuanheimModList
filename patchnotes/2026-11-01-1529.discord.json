@@ -1,0 +1,53 @@
+{
+  "patchFile": "patchnotes/2026-11-01-1529.md",
+  "profileUpdatedAt": "2026-11-01T15:29:33.415682Z",
+  "totalMods": 70,
+  "counts": {
+    "new": 0,
+    "removed": 2,
+    "updated": 0
+  },
+  "summary": [
+    "🐾 **BetterTames** has been removed from the pack.",
+    "🌀 **TeleportCreatures** has been removed from the pack."
+  ],
+  "cards": [
+    {
+      "name": "xtavim-BetterTames",
+      "title": "BetterTames",
+      "change": "removed",
+      "author": "xtavim",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/xtavim/BetterTames/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/xtavim-BetterTames-0.9.0.png",
+      "emoji": "🐾",
+      "steps": [
+        {
+          "label": "removed · was 0.9.0",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OdinPlus-TeleportCreatures",
+      "title": "TeleportCreatures",
+      "change": "removed",
+      "author": "OdinPlus",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/OdinPlus/TeleportCreatures/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/OdinPlus-TeleportCreatures-0.3.3.png",
+      "emoji": "🌀",
+      "steps": [
+        {
+          "label": "removed · was 0.3.3",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
