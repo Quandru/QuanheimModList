@@ -1,0 +1,53 @@
+{
+  "patchFile": "patchnotes/2026-11-01-0108.md",
+  "profileUpdatedAt": "2026-11-01T01:08:32.768819Z",
+  "totalMods": 72,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 2
+  },
+  "summary": [
+    "🔥 **QuanPieces** lets you walk on Quan's Chimney Flue like a grate, with smoke still rising straight through.",
+    "🌱 **MyDirtyHoe** is rebuilt for Valheim 1.0.21."
+  ],
+  "cards": [
+    {
+      "name": "MagicMike-MyDirtyHoe",
+      "title": "MyDirtyHoe",
+      "change": "updated",
+      "author": "MagicMike",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/MagicMike-MyDirtyHoe-2.3.4.png",
+      "emoji": "🌱",
+      "steps": [
+        {
+          "label": "2.3.3 → 2.3.4",
+          "bullets": [
+            "Updated to work with Valheim 1.0.21."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quandru-QuanPieces",
+      "title": "QuanPieces",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanPieces-1.2.2.png",
+      "emoji": "🛣️",
+      "steps": [
+        {
+          "label": "1.2.1 → 1.2.2",
+          "bullets": [
+            "Quan's Chimney Flue can now be walked on like a grate, and smoke still rises straight through it."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
