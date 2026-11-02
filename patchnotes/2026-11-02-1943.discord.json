@@ -1,0 +1,108 @@
+{
+  "patchFile": "patchnotes/2026-11-02-1943.md",
+  "profileUpdatedAt": "2026-11-02T19:43:37.844449Z",
+  "totalMods": 69,
+  "counts": {
+    "new": 0,
+    "removed": 5,
+    "updated": 0
+  },
+  "summary": [
+    "🗑️ **FarLands** and **PotalMap** were removed from the pack.",
+    "🌦️ **WeatherOverhaul** and **ValheimVisuals** were removed, so weather and visuals go back to normal.",
+    "🎞️ **SteadyFrame** was removed from the pack."
+  ],
+  "cards": [
+    {
+      "name": "Ivvty-FarLands",
+      "title": "FarLands",
+      "change": "removed",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
+      "icon": "https://cdn.hexium.gg/upload/2797/icon.png?14821",
+      "emoji": "🌍",
+      "steps": [
+        {
+          "label": "removed · was 1.0.7",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "korCaptain-PotalMap",
+      "title": "PotalMap",
+      "change": "removed",
+      "author": "korCaptain",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/korCaptain/PotalMap/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/korCaptain-PotalMap-1.0.5.png",
+      "emoji": "🗺️",
+      "steps": [
+        {
+          "label": "removed · was 1.0.5",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-SteadyFrame",
+      "title": "SteadyFrame",
+      "change": "removed",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
+      "icon": "https://cdn.hexium.gg/upload/1811/icon.png?14054",
+      "emoji": "🎞️",
+      "steps": [
+        {
+          "label": "removed · was 1.2.0",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-ValheimVisuals",
+      "title": "ValheimVisuals",
+      "change": "removed",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
+      "icon": "https://cdn.hexium.gg/upload/1593/icon.png?14882",
+      "emoji": "✨",
+      "steps": [
+        {
+          "label": "removed · was 1.4.5",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-WeatherOverhaul",
+      "title": "WeatherOverhaul",
+      "change": "removed",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
+      "icon": "https://cdn.hexium.gg/upload/2864/icon.png?14881",
+      "emoji": "🌦️",
+      "steps": [
+        {
+          "label": "removed · was 1.0.2",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}

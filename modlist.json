@@ -3,26 +3,42 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-02T19:19:31.326468Z"
+    "updatedAt": "2026-11-02T19:43:37.844449Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-02-1919.md",
-    "profileUpdatedAt": "2026-11-02T19:19:31.326468Z",
-    "previousProfileUpdatedAt": "2026-11-01T15:29:33.415682Z",
+    "file": "patchnotes/2026-11-02-1943.md",
+    "profileUpdatedAt": "2026-11-02T19:43:37.844449Z",
+    "previousProfileUpdatedAt": "2026-11-02T19:19:31.326468Z",
     "counts": {
-      "updated": 1,
-      "added": 4
+      "removed": 5
     },
-    "removed": [],
+    "removed": [
+      {
+        "name": "Ivvty-FarLands",
+        "version": "1.0.7"
+      },
+      {
+        "name": "Ivvty-SteadyFrame",
+        "version": "1.2.0"
+      },
+      {
+        "name": "Ivvty-ValheimVisuals",
+        "version": "1.4.5"
+      },
+      {
+        "name": "Ivvty-WeatherOverhaul",
+        "version": "1.0.2"
+      },
+      {
+        "name": "korCaptain-PotalMap",
+        "version": "1.0.5"
+      }
+    ],
     "discord": {
-      "posted": true,
-      "messageId": "1566894882566701209",
-      "messageIds": [
-        "1566894882566701209"
-      ],
-      "postedAt": "2026-11-02T19:20:52+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-02-1919.discord.json"
+    "cardsFile": "patchnotes/2026-11-02-1943.discord.json"
   },
   "mods": [
     {
@@ -222,54 +238,6 @@
       "url": "https://thunderstore.io/c/valheim/p/Geda_Giminei/FixAchievements/"
     },
     {
-      "name": "Ivvty-FarLands",
-      "version": "1.0.7",
-      "enabled": true,
-      "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.0.7"
-      }
-    },
-    {
-      "name": "Ivvty-SteadyFrame",
-      "version": "1.2.0",
-      "enabled": true,
-      "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.2.0"
-      }
-    },
-    {
-      "name": "Ivvty-ValheimVisuals",
-      "version": "1.4.5",
-      "enabled": true,
-      "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.4.5"
-      }
-    },
-    {
-      "name": "Ivvty-WeatherOverhaul",
-      "version": "1.0.2",
-      "enabled": true,
-      "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.0.2"
-      }
-    },
-    {
       "name": "JereKuusela-Ore_Support",
       "version": "1.12.0",
       "enabled": true,
@@ -282,18 +250,6 @@
       "enabled": true,
       "source": "thunderstore",
       "url": "https://thunderstore.io/c/valheim/p/JereKuusela/Server_devcommands/"
-    },
-    {
-      "name": "korCaptain-PotalMap",
-      "version": "1.0.5",
-      "enabled": false,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/korCaptain/PotalMap/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.0.4",
-        "to": "1.0.5"
-      }
     },
     {
       "name": "lunarbin-Expanded_Boat_Minimap",
