@@ -1,0 +1,110 @@
+{
+  "patchFile": "patchnotes/2026-11-02-1919.md",
+  "profileUpdatedAt": "2026-11-02T19:19:31.326468Z",
+  "totalMods": 74,
+  "counts": {
+    "new": 4,
+    "removed": 0,
+    "updated": 1
+  },
+  "summary": [
+    "🌦️ **WeatherOverhaul** is new and adds volumetric clouds, weather fronts, lightning, light shafts, snow and puddles.",
+    "🌊 **ValheimVisuals** is new and turns up water, reflections, normal maps and AO within the game's own ranges.",
+    "🏔️ **FarLands** is new and draws mountains, coasts, forests and bases far beyond the usual distance.",
+    "⚡ **SteadyFrame** is new and smooths performance with fewer hitches around big bases and fast portal travel.",
+    "🌀 **PotalMap** gets extra logging to help diagnose Guild mode not being selectable."
+  ],
+  "cards": [
+    {
+      "name": "korCaptain-PotalMap",
+      "title": "PotalMap",
+      "change": "updated",
+      "author": "korCaptain",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/korCaptain/PotalMap/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/korCaptain-PotalMap-1.0.5.png",
+      "emoji": "🌀",
+      "steps": [
+        {
+          "label": "1.0.4 → 1.0.5",
+          "bullets": [
+            "Added diagnostic logging to help track down Guild mode not being selectable with Shift+E."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-FarLands",
+      "title": "FarLands",
+      "change": "added",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
+      "icon": "https://cdn.hexium.gg/upload/2797/icon.png?14821",
+      "emoji": "🏔️",
+      "steps": [
+        {
+          "label": "new · 1.0.7",
+          "bullets": [
+            "Shows mountains, coasts, forests and your bases far beyond where the game normally stops drawing them, at little cost."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-SteadyFrame",
+      "title": "SteadyFrame",
+      "change": "added",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
+      "icon": "https://cdn.hexium.gg/upload/1811/icon.png?14054",
+      "emoji": "⚡",
+      "steps": [
+        {
+          "label": "new · 1.2.0",
+          "bullets": [
+            "Makes Valheim smoother without changing its look or gameplay, with fewer hitches around large bases and fast portal travel."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-ValheimVisuals",
+      "title": "ValheimVisuals",
+      "change": "added",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
+      "icon": "https://cdn.hexium.gg/upload/1593/icon.png?14882",
+      "emoji": "🌊",
+      "steps": [
+        {
+          "label": "new · 1.4.5",
+          "bullets": [
+            "Turns up water tessellation, reflections, normal maps and AO within the game's own ranges."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-WeatherOverhaul",
+      "title": "WeatherOverhaul",
+      "change": "added",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
+      "icon": "https://cdn.hexium.gg/upload/2864/icon.png?14881",
+      "emoji": "🌦️",
+      "steps": [
+        {
+          "label": "new · 1.0.2",
+          "bullets": [
+            "Adds volumetric clouds, weather fronts, lightning, light shafts, snow and puddles that follow the game's own weather (client-side)."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
