@@ -3,7 +3,7 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-03T00:58:23.256552Z"
+    "updatedAt": "2026-11-03T01:16:49.228600Z"
   },
   "lastPatch": {
     "file": "patchnotes/2026-11-03-0058.md",
@@ -225,48 +225,28 @@
       "version": "1.0.8",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.0.8"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands"
     },
     {
       "name": "Ivvty-SteadyFrame",
       "version": "1.2.0",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.2.0"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame"
     },
     {
       "name": "Ivvty-ValheimVisuals",
       "version": "1.4.5",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.4.5"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals"
     },
     {
       "name": "Ivvty-WeatherOverhaul",
       "version": "1.0.2",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.0.2"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul"
     },
     {
       "name": "JereKuusela-Ore_Support",
