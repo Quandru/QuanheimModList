@@ -1,0 +1,168 @@
+{
+  "patchFile": "patchnotes/2026-11-06-0032.md",
+  "profileUpdatedAt": "2026-11-06T00:32:03.903386Z",
+  "totalMods": 73,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 6
+  },
+  "summary": [
+    "🌊 **MyDirtyHoe** adds an experimental River tool with swimmable water, currents and waterfalls, and clears rocks and pebbles with Clear Forestry.",
+    "🔥 **FarLands** makes far bases' fires, torches and lamps glow at night.",
+    "⚡ **WeatherOverhaul** adds close lightning strikes, shared between players, and new weather settings.",
+    "🛠️ **SteadyFrame**, **ValheimVisuals** and **OdinBanners** get fixes for servers and compatibility."
+  ],
+  "cards": [
+    {
+      "name": "Ivvty-FarLands",
+      "title": "FarLands",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
+      "icon": "https://cdn.hexium.gg/upload/2797/icon.png?15159",
+      "emoji": "🏔️",
+      "steps": [
+        {
+          "label": "1.0.8 → 1.1.0",
+          "bullets": [
+            "Fires, torches and lamps of far bases now glow at night, as long as a fire has fuel.",
+            "Fixed a dark ring before the far view and shimmering far haze.",
+            "Sea mist is now off by default; turn it on with Air -> SeaMist."
+          ]
+        },
+        {
+          "label": "1.1.0 → 1.1.1",
+          "bullets": [
+            "Switches itself off on a dedicated server, so no more shader errors in the log."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MagicMike-MyDirtyHoe",
+      "title": "MyDirtyHoe",
+      "change": "updated",
+      "author": "MagicMike",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/MagicMike-MyDirtyHoe-2.3.7.png",
+      "emoji": "🌱",
+      "steps": [
+        {
+          "label": "2.3.4 → 2.3.5",
+          "bullets": [
+            "Clear Forestry now also removes large shore rocks, broken rocks, ore rocks and small pebbles.",
+            "Terrain reset brings pebbles back where it touches a cleared area."
+          ]
+        },
+        {
+          "label": "2.3.5 → 2.3.6",
+          "bullets": [
+            "Experimental River piece: dig a river you can swim and sail on, saved with the world and shared in multiplayer.",
+            "Rivers have a current that carries boats and swimmers, running-water sound and animated water.",
+            "Fixed a \"file is corrupted\" error on start-up."
+          ]
+        },
+        {
+          "label": "2.3.6 → 2.3.7",
+          "bullets": [
+            "Experimental waterfalls: steep river stretches now pour over cliffs into a pool, with their own water, spray and sound.",
+            "Rivers blend into the sea, and the River piece no longer costs Stone.",
+            "Holding Alt with the hoe no longer sits you down, and placement labels are smaller."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OdinPlus-OdinBanners",
+      "title": "OdinBanners",
+      "change": "updated",
+      "author": "OdinPlus",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinBanners",
+      "icon": "https://cdn.hexium.gg/upload/124/icon.png?15088",
+      "emoji": "🚩",
+      "steps": [
+        {
+          "label": "1.1.14 → 1.1.15",
+          "bullets": [
+            "Removed an incompatibility with Valheim Plus."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-SteadyFrame",
+      "title": "SteadyFrame",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
+      "icon": "https://cdn.hexium.gg/upload/1811/icon.png?15161",
+      "emoji": "🎞️",
+      "steps": [
+        {
+          "label": "1.2.0 → 1.2.1",
+          "bullets": [
+            "Fixed chunk loader zones being unloaded, which could leave joining players stuck on the loading screen."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-ValheimVisuals",
+      "title": "ValheimVisuals",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
+      "icon": "https://cdn.hexium.gg/upload/1593/icon.png?15162",
+      "emoji": "✨",
+      "steps": [
+        {
+          "label": "1.4.5 → 1.4.6",
+          "bullets": [
+            "Switches itself off on a dedicated server, avoiding \"PatchAll failed\" errors.",
+            "If a game update breaks one change, only that part stays off instead of the rest too."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-WeatherOverhaul",
+      "title": "WeatherOverhaul",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
+      "icon": "https://cdn.hexium.gg/upload/2864/icon.png?15163",
+      "emoji": "⛈️",
+      "steps": [
+        {
+          "label": "1.0.2 → 1.0.3",
+          "bullets": [
+            "Lightning can rarely strike close by, hitting roofs and treetops, and is shared between players.",
+            "New settings for each sky and weather, plus how many clear days have broken clouds.",
+            "The moon now hides the stars behind it."
+          ]
+        },
+        {
+          "label": "1.0.3 → 1.0.4",
+          "bullets": [
+            "Fixed sound stuttering when the game pauses to clean up memory."
+          ]
+        },
+        {
+          "label": "1.0.4 → 1.0.5",
+          "bullets": [
+            "Lightning now lights the ground and fog where it strikes, even far away.",
+            "Fixed bars of light across near bolts."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
