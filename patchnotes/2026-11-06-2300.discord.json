@@ -1,0 +1,53 @@
+{
+  "patchFile": "patchnotes/2026-11-06-2300.md",
+  "profileUpdatedAt": "2026-11-06T23:00:04.126344Z",
+  "totalMods": 73,
+  "counts": {
+    "new": 1,
+    "removed": 1,
+    "updated": 0
+  },
+  "summary": [
+    "🏗️ **QuanChunkLoader** is new and keeps your bases producing while you are away, even after the last logout.",
+    "🗑️ **ChunkLoader Continued** has been removed, replaced by QuanChunkLoader."
+  ],
+  "cards": [
+    {
+      "name": "Quandru-QuanChunkLoader",
+      "title": "QuanChunkLoader",
+      "change": "added",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanChunkLoader-1.0.0.png",
+      "emoji": "🧱",
+      "steps": [
+        {
+          "label": "new · 1.0.0",
+          "bullets": [
+            "Keeps bases producing while you are away, keeps moored boats afloat and runs surtling farms."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NerdLounge-ChunkLoader_Continued",
+      "title": "ChunkLoader Continued",
+      "change": "removed",
+      "author": "NerdLounge",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/NerdLounge/ChunkLoader_Continued/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/NerdLounge-ChunkLoader_Continued-1.8.0.png",
+      "emoji": "🧱",
+      "steps": [
+        {
+          "label": "removed · was 1.8.0",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}

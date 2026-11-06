@@ -3,26 +3,27 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-06T00:55:09.818793Z"
+    "updatedAt": "2026-11-06T23:00:04.126344Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-06-0032.md",
-    "profileUpdatedAt": "2026-11-06T00:32:03.903386Z",
-    "previousProfileUpdatedAt": "2026-11-03T01:39:54.309847Z",
+    "file": "patchnotes/2026-11-06-2300.md",
+    "profileUpdatedAt": "2026-11-06T23:00:04.126344Z",
+    "previousProfileUpdatedAt": "2026-11-06T00:55:09.818793Z",
     "counts": {
-      "updated": 6
+      "added": 1,
+      "removed": 1
     },
-    "removed": [],
+    "removed": [
+      {
+        "name": "NerdLounge-ChunkLoader_Continued",
+        "version": "1.8.0"
+      }
+    ],
     "discord": {
-      "posted": true,
-      "messageId": "1568061474503659560",
-      "messageIds": [
-        "1568061474503659560",
-        "1568061480417628222"
-      ],
-      "postedAt": "2026-11-06T00:36:30+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-06-0032.discord.json"
+    "cardsFile": "patchnotes/2026-11-06-2300.discord.json"
   },
   "mods": [
     {
@@ -313,13 +314,6 @@
       "url": "https://thunderstore.io/c/valheim/p/Mydayyy/ServerSideMap/"
     },
     {
-      "name": "NerdLounge-ChunkLoader_Continued",
-      "version": "1.8.0",
-      "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/NerdLounge/ChunkLoader_Continued/"
-    },
-    {
       "name": "OdinPlus-OdinArchitect",
       "version": "1.9.4",
       "enabled": true,
@@ -367,6 +361,18 @@
       "enabled": true,
       "source": "thunderstore",
       "url": "https://thunderstore.io/c/valheim/p/Qua8ion/LetMeTameYouServerFix/"
+    },
+    {
+      "name": "Quandru-QuanChunkLoader",
+      "version": "1.0.0",
+      "enabled": true,
+      "source": "thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
+      "lastPatch": {
+        "change": "added",
+        "from": null,
+        "to": "1.0.0"
+      }
     },
     {
       "name": "Quandru-QuanDupeLightsources",
