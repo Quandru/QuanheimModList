@@ -3,7 +3,7 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-06T00:32:03.903386Z"
+    "updatedAt": "2026-11-06T00:55:09.818793Z"
   },
   "lastPatch": {
     "file": "patchnotes/2026-11-06-0032.md",
@@ -226,48 +226,28 @@
       "version": "1.1.1",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.0.8",
-        "to": "1.1.1"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands"
     },
     {
       "name": "Ivvty-SteadyFrame",
       "version": "1.2.1",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.2.0",
-        "to": "1.2.1"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame"
     },
     {
       "name": "Ivvty-ValheimVisuals",
       "version": "1.4.6",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.4.5",
-        "to": "1.4.6"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals"
     },
     {
       "name": "Ivvty-WeatherOverhaul",
       "version": "1.0.5",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.0.2",
-        "to": "1.0.5"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul"
     },
     {
       "name": "JereKuusela-Ore_Support",
@@ -295,12 +275,7 @@
       "version": "2.3.7",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "2.3.4",
-        "to": "2.3.7"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/"
     },
     {
       "name": "MathiasDecrock-PlanBuild",
@@ -356,12 +331,7 @@
       "version": "1.1.15",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinBanners",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.1.14",
-        "to": "1.1.15"
-      }
+      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinBanners"
     },
     {
       "name": "OdinPlus-OdinsFoodBarrels",
