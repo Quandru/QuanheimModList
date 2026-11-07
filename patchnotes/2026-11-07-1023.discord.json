@@ -1,0 +1,34 @@
+{
+  "patchFile": "patchnotes/2026-11-07-1023.md",
+  "profileUpdatedAt": "2026-11-07T10:23:57.373504Z",
+  "totalMods": 73,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 1
+  },
+  "summary": [
+    "🌱 **MyDirtyHoe** has an updated readme and links."
+  ],
+  "cards": [
+    {
+      "name": "MagicMike-MyDirtyHoe",
+      "title": "MyDirtyHoe",
+      "change": "updated",
+      "author": "MagicMike",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/MagicMike/MyDirtyHoe",
+      "icon": "https://cdn.hexium.gg/upload/2932/icon.png?15572",
+      "emoji": "🌱",
+      "steps": [
+        {
+          "label": "2.3.7 → 2.3.8",
+          "bullets": [
+            "Readme and links updated."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}

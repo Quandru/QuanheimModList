@@ -3,25 +3,21 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-07T10:18:29.246784Z"
+    "updatedAt": "2026-11-07T10:23:57.373504Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-07-1018.md",
-    "profileUpdatedAt": "2026-11-07T10:18:29.246784Z",
-    "previousProfileUpdatedAt": "2026-11-06T23:00:04.126344Z",
+    "file": "patchnotes/2026-11-07-1023.md",
+    "profileUpdatedAt": "2026-11-07T10:23:57.373504Z",
+    "previousProfileUpdatedAt": "2026-11-07T10:18:29.246784Z",
     "counts": {
       "updated": 1
     },
     "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1568570848091181096",
-      "messageIds": [
-        "1568570848091181096"
-      ],
-      "postedAt": "2026-11-07T10:20:33+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-07-1018.discord.json"
+    "cardsFile": "patchnotes/2026-11-07-1023.discord.json"
   },
   "mods": [
     {
@@ -271,10 +267,15 @@
     },
     {
       "name": "MagicMike-MyDirtyHoe",
-      "version": "2.3.7",
+      "version": "2.3.8",
       "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/MagicMike/MyDirtyHoe/"
+      "source": "hexium",
+      "url": "https://valheim.hexium.gg/mods/MagicMike/MyDirtyHoe",
+      "lastPatch": {
+        "change": "updated",
+        "from": "2.3.7",
+        "to": "2.3.8"
+      }
     },
     {
       "name": "MathiasDecrock-PlanBuild",
@@ -365,12 +366,7 @@
       "version": "1.1.0",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.0.0",
-        "to": "1.1.0"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/"
     },
     {
       "name": "Quandru-QuanDupeLightsources",
