@@ -1,0 +1,36 @@
+{
+  "patchFile": "patchnotes/2026-11-07-1018.md",
+  "profileUpdatedAt": "2026-11-07T10:18:29.246784Z",
+  "totalMods": 73,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 1
+  },
+  "summary": [
+    "🗺️ **QuanChunkLoader** now works with SteadyFrame's Object streaming and counts overlapping zones only once."
+  ],
+  "cards": [
+    {
+      "name": "Quandru-QuanChunkLoader",
+      "title": "QuanChunkLoader",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanChunkLoader-1.1.0.png",
+      "emoji": "🗺️",
+      "steps": [
+        {
+          "label": "1.0.0 → 1.1.0",
+          "bullets": [
+            "The zone grid now stays up for 2 minutes instead of 15 seconds and shows other nearby loaded zones in yellow.",
+            "Works with SteadyFrame's Object streaming, so loaded zones are no longer unloaded on dedicated servers.",
+            "Overlapping observers now count each zone only once towards the limits."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
