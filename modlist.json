@@ -3,26 +3,22 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-08T04:27:10.827565Z"
+    "updatedAt": "2026-11-08T11:12:38.969542Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-08-0427.md",
-    "profileUpdatedAt": "2026-11-08T04:27:10.827565Z",
-    "previousProfileUpdatedAt": "2026-11-07T10:23:57.373504Z",
+    "file": "patchnotes/2026-11-08-1112.md",
+    "profileUpdatedAt": "2026-11-08T11:12:38.969542Z",
+    "previousProfileUpdatedAt": "2026-11-08T04:27:10.827565Z",
     "counts": {
-      "updated": 6
+      "updated": 2,
+      "added": 1
     },
     "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1568845288905384008",
-      "messageIds": [
-        "1568845288905384008",
-        "1568845295192641596"
-      ],
-      "postedAt": "2026-11-08T04:31:06+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-08-0427.discord.json"
+    "cardsFile": "patchnotes/2026-11-08-1112.discord.json"
   },
   "mods": [
     {
@@ -79,24 +75,14 @@
       "version": "1.2.11",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuMiscPatches",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.2.10",
-        "to": "1.2.11"
-      }
+      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuMiscPatches"
     },
     {
       "name": "Azumatt-AzuWearNTearPatches",
       "version": "1.0.12",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuWearNTearPatches",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.0.10",
-        "to": "1.0.12"
-      }
+      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuWearNTearPatches"
     },
     {
       "name": "Azumatt-AzuWorkbenchTweaks",
@@ -236,36 +222,21 @@
       "version": "1.2.0",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.1.1",
-        "to": "1.2.0"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands"
     },
     {
       "name": "Ivvty-SteadyFrame",
       "version": "1.2.2",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.2.1",
-        "to": "1.2.2"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame"
     },
     {
       "name": "Ivvty-ValheimVisuals",
       "version": "1.4.7",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.4.6",
-        "to": "1.4.7"
-      }
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals"
     },
     {
       "name": "Ivvty-WeatherOverhaul",
@@ -314,12 +285,7 @@
       "version": "0.1.1",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Meldurson/LetMeTameYou/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "0.1.0",
-        "to": "0.1.1"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/Meldurson/LetMeTameYou/"
     },
     {
       "name": "MilkMediaProductions-ExpertExplorer",
@@ -392,11 +358,28 @@
       "url": "https://thunderstore.io/c/valheim/p/Qua8ion/LetMeTameYouServerFix/"
     },
     {
-      "name": "Quandru-QuanChunkLoader",
-      "version": "1.1.0",
+      "name": "Quandru-QuanChat",
+      "version": "1.0.0",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/"
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChat/",
+      "lastPatch": {
+        "change": "added",
+        "from": null,
+        "to": "1.0.0"
+      }
+    },
+    {
+      "name": "Quandru-QuanChunkLoader",
+      "version": "1.1.2",
+      "enabled": true,
+      "source": "thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.1.0",
+        "to": "1.1.2"
+      }
     },
     {
       "name": "Quandru-QuanDupeLightsources",
@@ -407,10 +390,15 @@
     },
     {
       "name": "Quandru-QuanPieces",
-      "version": "1.2.2",
+      "version": "1.4.0",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/"
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.2.2",
+        "to": "1.4.0"
+      }
     },
     {
       "name": "R3ddTeamRules-Warmth",

@@ -1,0 +1,87 @@
+{
+  "patchFile": "patchnotes/2026-11-08-1112.md",
+  "profileUpdatedAt": "2026-11-08T11:12:38.969542Z",
+  "totalMods": 74,
+  "counts": {
+    "new": 1,
+    "removed": 0,
+    "updated": 2
+  },
+  "summary": [
+    "💬 New mod **QuanChat** makes chat easier to follow, with shout by default, sticky channels and a chat window that fades instead of vanishing.",
+    "🐔 **QuanPieces** adds a Floor Heater that decides whether eggs on Quan's Chicken Coop Floors hatch, and removes the Unheated Chicken Coop Floor.",
+    "🗺️ **QuanChunkLoader** no longer turns the map's dot-pin filter back on when observers are shown, and adds more Debug log checks for servers."
+  ],
+  "cards": [
+    {
+      "name": "Quandru-QuanChunkLoader",
+      "title": "QuanChunkLoader",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanChunkLoader-1.1.2.png",
+      "emoji": "🗺️",
+      "steps": [
+        {
+          "label": "1.1.0 → 1.1.1",
+          "bullets": [
+            "Showing observers on the map no longer turns the dot-pin filter back on.",
+            "Debug logging now also watches tames, owner changes, ships, overdue plants and station capacity."
+          ]
+        },
+        {
+          "label": "1.1.1 → 1.1.2",
+          "bullets": [
+            "Readme and changelog fixes only, with no change to the mod."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quandru-QuanPieces",
+      "title": "QuanPieces",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanPieces-1.4.0.png",
+      "emoji": "🐔",
+      "steps": [
+        {
+          "label": "1.2.2 → 1.3.0",
+          "bullets": [
+            "New Unheated Chicken Coop Floor, so eggs laid on it don't hatch and can be collected."
+          ]
+        },
+        {
+          "label": "1.3.0 → 1.4.0",
+          "bullets": [
+            "New Floor Heater (5 Stone, Workbench) warms coop floors within 10 m so eggs hatch, and needs no fuel.",
+            "Chicken Coop Floors are now warm only near a heater that's on, so existing coops need one to keep hatching eggs.",
+            "The Unheated Chicken Coop Floor is removed, and any placed ones disappear."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quandru-QuanChat",
+      "title": "QuanChat",
+      "change": "added",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChat/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanChat-1.0.0.png",
+      "emoji": "💬",
+      "steps": [
+        {
+          "label": "new · 1.0.0",
+          "bullets": [
+            "Adds chat you don't miss: shout by default, sticky /s and /say channels, no forced capitals, a fading chat window and no shout map pings."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
