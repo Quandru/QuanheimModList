@@ -1,0 +1,154 @@
+{
+  "patchFile": "patchnotes/2026-11-08-0427.md",
+  "profileUpdatedAt": "2026-11-08T04:27:10.827565Z",
+  "totalMods": 73,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 6
+  },
+  "summary": [
+    "🌄 **FarLands** adds far grass, far building ruins, fire streaks on water and better HD Terrain colours, and starts much faster in a new world.",
+    "🧱 **AzuWearNTearPatches** is updated for Valheim 1.0 with new rain, ash, snow and damage settings.",
+    "🐾 **LetMeTameYou** brings back trading and hand feeding.",
+    "🌿 **ValheimVisuals** and **SteadyFrame** make far grass cheaper to draw, and reflections no longer show black marks."
+  ],
+  "cards": [
+    {
+      "name": "Azumatt-AzuMiscPatches",
+      "title": "AzuMiscPatches",
+      "change": "updated",
+      "author": "Azumatt",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuMiscPatches",
+      "icon": "https://cdn.hexium.gg/upload/250/icon.png?15534",
+      "emoji": "🩹",
+      "steps": [
+        {
+          "label": "1.2.10 → 1.2.11",
+          "bullets": [
+            "Fixed Ember Charges doing no damage to the Gammeltroll when Prevent Easy Vein Finding is on."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Azumatt-AzuWearNTearPatches",
+      "title": "AzuWearNTearPatches",
+      "change": "updated",
+      "author": "Azumatt",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuWearNTearPatches",
+      "icon": "https://cdn.hexium.gg/upload/252/icon.png?15533",
+      "emoji": "🛣️",
+      "steps": [
+        {
+          "label": "1.0.10 → 1.0.11",
+          "bullets": [
+            "Updated for Valheim 1.0, with structural integrity settings for Ice and Timberwood.",
+            "Separate rain, ash and snow damage toggles, and a new Damage section for fire, lava, creature and player damage.",
+            "New boat toggles for the boiling ocean and for being upside down."
+          ]
+        },
+        {
+          "label": "1.0.11 → 1.0.12",
+          "bullets": [
+            "Fixed a BepInEx reference."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-FarLands",
+      "title": "FarLands",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
+      "icon": "https://cdn.hexium.gg/upload/2797/icon.png?15714",
+      "emoji": "🌄",
+      "steps": [
+        {
+          "label": "1.1.1 → 1.1.2",
+          "bullets": [
+            "The first start in a world is much quicker, as the far forest is now made on several threads.",
+            "Optional message when FarLands has finished loading, off by default."
+          ]
+        },
+        {
+          "label": "1.1.2 → 1.1.3",
+          "bullets": [
+            "Fixed far land looking brown, dark and patchy with HD Terrain packs, and the far Ashlands looking white."
+          ]
+        },
+        {
+          "label": "1.1.3 → 1.2.0",
+          "bullets": [
+            "Far grass and Plains flowers now reach the horizon, and the world's ruins, towers and houses are drawn far off.",
+            "Far bonfires look like real fires, are hidden by fog and by objects in front, and leave red streaks on water.",
+            "Fixed far snow and Mistlands colours with HD Terrain."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Meldurson-LetMeTameYou",
+      "title": "LetMeTameYou",
+      "change": "updated",
+      "author": "Meldurson",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Meldurson/LetMeTameYou/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Meldurson-LetMeTameYou-0.1.1.png",
+      "emoji": "🐾",
+      "steps": [
+        {
+          "label": "0.1.0 → 0.1.1",
+          "bullets": [
+            "Trading and hand feeding are back.",
+            "Egg hatch time can be changed, and there is a new setting for hover width.",
+            "Works with other mods that change follow distance."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-SteadyFrame",
+      "title": "SteadyFrame",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
+      "icon": "https://cdn.hexium.gg/upload/1811/icon.png?15704",
+      "emoji": "🎞️",
+      "steps": [
+        {
+          "label": "1.2.1 → 1.2.2",
+          "bullets": [
+            "Grass updates are much cheaper when the grass distance is raised, with the same look."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-ValheimVisuals",
+      "title": "ValheimVisuals",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
+      "icon": "https://cdn.hexium.gg/upload/1593/icon.png?15705",
+      "emoji": "✨",
+      "steps": [
+        {
+          "label": "1.4.6 → 1.4.7",
+          "bullets": [
+            "Fixed black marks on reflective surfaces, such as the ice of the Deep North.",
+            "The grass radius setting now only applies when SteadyFrame is installed, to avoid a big performance cost.",
+            "Grass now reaches the full set radius instead of stopping at 100 m."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}

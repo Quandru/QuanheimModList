@@ -3,25 +3,21 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-07T10:23:57.373504Z"
+    "updatedAt": "2026-11-08T04:27:10.827565Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-07-1023.md",
-    "profileUpdatedAt": "2026-11-07T10:23:57.373504Z",
-    "previousProfileUpdatedAt": "2026-11-07T10:18:29.246784Z",
+    "file": "patchnotes/2026-11-08-0427.md",
+    "profileUpdatedAt": "2026-11-08T04:27:10.827565Z",
+    "previousProfileUpdatedAt": "2026-11-07T10:23:57.373504Z",
     "counts": {
-      "updated": 1
+      "updated": 6
     },
     "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1568572077596745813",
-      "messageIds": [
-        "1568572077596745813"
-      ],
-      "postedAt": "2026-11-07T10:25:26+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-07-1023.discord.json"
+    "cardsFile": "patchnotes/2026-11-08-0427.discord.json"
   },
   "mods": [
     {
@@ -75,17 +71,27 @@
     },
     {
       "name": "Azumatt-AzuMiscPatches",
-      "version": "1.2.10",
+      "version": "1.2.11",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuMiscPatches"
+      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuMiscPatches",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.2.10",
+        "to": "1.2.11"
+      }
     },
     {
       "name": "Azumatt-AzuWearNTearPatches",
-      "version": "1.0.10",
+      "version": "1.0.12",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuWearNTearPatches"
+      "url": "https://valheim.hexium.gg/mods/Azumatt/AzuWearNTearPatches",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.0.10",
+        "to": "1.0.12"
+      }
     },
     {
       "name": "Azumatt-AzuWorkbenchTweaks",
@@ -222,24 +228,39 @@
     },
     {
       "name": "Ivvty-FarLands",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands"
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.1.1",
+        "to": "1.2.0"
+      }
     },
     {
       "name": "Ivvty-SteadyFrame",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame"
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.2.1",
+        "to": "1.2.2"
+      }
     },
     {
       "name": "Ivvty-ValheimVisuals",
-      "version": "1.4.6",
+      "version": "1.4.7",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals"
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.4.6",
+        "to": "1.4.7"
+      }
     },
     {
       "name": "Ivvty-WeatherOverhaul",
@@ -274,12 +295,7 @@
       "version": "2.3.8",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/MagicMike/MyDirtyHoe",
-      "lastPatch": {
-        "change": "updated",
-        "from": "2.3.7",
-        "to": "2.3.8"
-      }
+      "url": "https://valheim.hexium.gg/mods/MagicMike/MyDirtyHoe"
     },
     {
       "name": "MathiasDecrock-PlanBuild",
@@ -290,10 +306,15 @@
     },
     {
       "name": "Meldurson-LetMeTameYou",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Meldurson/LetMeTameYou/"
+      "url": "https://thunderstore.io/c/valheim/p/Meldurson/LetMeTameYou/",
+      "lastPatch": {
+        "change": "updated",
+        "from": "0.1.0",
+        "to": "0.1.1"
+      }
     },
     {
       "name": "MilkMediaProductions-ExpertExplorer",
