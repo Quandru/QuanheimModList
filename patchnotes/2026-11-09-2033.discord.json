@@ -1,0 +1,149 @@
+{
+  "patchFile": "patchnotes/2026-11-09-2033.md",
+  "profileUpdatedAt": "2026-11-09T20:33:20.981003Z",
+  "totalMods": 74,
+  "counts": {
+    "new": 1,
+    "removed": 1,
+    "updated": 5
+  },
+  "summary": [
+    "🏆 **Unshamed** is new and unblocks achievements for modded games, restoring the ones you already earned.",
+    "🗑️ **FixAchievements** has been removed from the pack.",
+    "🌿 **FarLands** now draws the game's own grass out to 200 m and makes more far-off lights and structures visible.",
+    "🏰 **FarLands** also fixes small trees swaying and bases vanishing in the far view when used with More Vanilla Build Prefabs."
+  ],
+  "cards": [
+    {
+      "name": "Ivvty-FarLands",
+      "title": "FarLands",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
+      "icon": "https://cdn.hexium.gg/upload/2797/icon.png?15977",
+      "emoji": "🏔️",
+      "steps": [
+        {
+          "label": "1.2.0 → 1.3.0",
+          "bullets": [
+            "The game's own grass now shows out to 200 m instead of about 45 m, replacing the painted far-off grass.",
+            "More lights glow far off at night, and the Ashlands' bell fragment pillar is visible from afar.",
+            "Fixed far-off trees swaying and bases vanishing with More Vanilla Build Prefabs, plus missing fences, roofs and banners."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "potto007-OttoFuel",
+      "title": "OttoFuel",
+      "change": "updated",
+      "author": "potto007",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/potto007/OttoFuel/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/potto007-OttoFuel-1.7.3.png",
+      "emoji": "🔥",
+      "steps": [
+        {
+          "label": "1.7.2 → 1.7.3",
+          "bullets": [
+            "Rebuilt for Valheim 1.0.21, with no other changes."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quandru-QuanChunkLoader",
+      "title": "QuanChunkLoader",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanChunkLoader-1.1.3.png",
+      "emoji": "🗺️",
+      "steps": [
+        {
+          "label": "1.1.2 → 1.1.3",
+          "bullets": [
+            "Pressing Shift while typing no longer shows the zone grid.",
+            "The \"had to be created again\" warning no longer falsely counts moving things like creatures and players."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-SteadyFrame",
+      "title": "SteadyFrame",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
+      "icon": "https://cdn.hexium.gg/upload/1811/icon.png?15979",
+      "emoji": "🎞️",
+      "steps": [
+        {
+          "label": "1.2.2 → 1.3.0",
+          "bullets": [
+            "Grass is now built in the background and drawn on the graphics card, saving a little time each frame while walking.",
+            "Shares its GPU grass code with FarLands 1.3.0, so update both together."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-ValheimVisuals",
+      "title": "ValheimVisuals",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
+      "icon": "https://cdn.hexium.gg/upload/1593/icon.png?15978",
+      "emoji": "✨",
+      "steps": [
+        {
+          "label": "1.4.7 → 1.4.8",
+          "bullets": [
+            "The grass radius now works with the GPU grass from either SteadyFrame 1.3.0 or FarLands 1.3.0."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Azumatt-Unshamed",
+      "title": "Unshamed",
+      "change": "added",
+      "author": "Azumatt",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Azumatt/Unshamed",
+      "icon": "https://cdn.hexium.gg/upload/850/icon.png?14169",
+      "emoji": "🏆",
+      "steps": [
+        {
+          "label": "new · 1.0.9",
+          "bullets": [
+            "Unblocks achievements for modded games and restores the ones you already earned, with no free unlocks."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Geda_Giminei-FixAchievements",
+      "title": "FixAchievements",
+      "change": "removed",
+      "author": "Geda_Giminei",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Geda_Giminei/FixAchievements/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Geda_Giminei-FixAchievements-1.0.2.png",
+      "emoji": "🧩",
+      "steps": [
+        {
+          "label": "removed · was 1.0.2",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
