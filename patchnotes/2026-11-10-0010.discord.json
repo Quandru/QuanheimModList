@@ -1,0 +1,119 @@
+{
+  "patchFile": "patchnotes/2026-11-10-0010.md",
+  "profileUpdatedAt": "2026-11-10T00:10:32.549166Z",
+  "totalMods": 74,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 5
+  },
+  "summary": [
+    "🌿 **FarLands** and **SteadyFrame** fix missing grass in portal previews and gaps when grass rebuilds.",
+    "🔥 **QuanChunkLoader** now pauses Eitr radiation in loaded bases while nobody is nearby.",
+    "🎨 **ValheimVisuals** limits contact shadows to your own camera and settles which mod controls grass radius.",
+    "🏛️ **OdinArchitect** fixes the Stone Battlements sound."
+  ],
+  "cards": [
+    {
+      "name": "Ivvty-FarLands",
+      "title": "FarLands",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
+      "icon": "https://cdn.hexium.gg/upload/2797/icon.png?16119",
+      "emoji": "🌄",
+      "steps": [
+        {
+          "label": "1.3.0 → 1.4.0",
+          "bullets": [
+            "Grass now shows in PortalPreview views, and the Ashlands fortress beacon fades out between 1000 and 1500 m (new `Buildings.BeaconDistance` setting).",
+            "Fixed grass radius conflicts with other mods such as HD Terrain, and grass no longer vanishes briefly while rebuilding."
+          ]
+        },
+        {
+          "label": "1.4.0 → 1.4.1",
+          "bullets": [
+            "Far fires and lamps cost much less performance at big bases, with the same look."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OdinPlus-OdinArchitect",
+      "title": "OdinArchitect",
+      "change": "updated",
+      "author": "OdinPlus",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinArchitect",
+      "icon": "https://cdn.hexium.gg/upload/159/icon.png?16116",
+      "emoji": "🏛️",
+      "steps": [
+        {
+          "label": "1.9.4 → 1.9.5",
+          "bullets": [
+            "Fixed the Stone Battlements sound effect."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quandru-QuanChunkLoader",
+      "title": "QuanChunkLoader",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanChunkLoader",
+      "icon": "https://cdn.hexium.gg/upload/3072/icon.png?16131",
+      "emoji": "📦",
+      "steps": [
+        {
+          "label": "1.1.3 → 1.2.0",
+          "bullets": [
+            "Eitr radiation now pauses in loaded bases while no player is near, so dropped Refined Eitr can't wreck an unattended base (on by default).",
+            "New optional setting to hide harmless navmesh log warnings, and the log now explains them."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-SteadyFrame",
+      "title": "SteadyFrame",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
+      "icon": "https://cdn.hexium.gg/upload/1811/icon.png?16117",
+      "emoji": "🎞️",
+      "steps": [
+        {
+          "label": "1.3.0 → 1.3.1",
+          "bullets": [
+            "Grass now shows in PortalPreview views, and no longer vanishes briefly when it rebuilds.",
+            "Fixed which mod draws the shared GPU grass when one is switched off."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-ValheimVisuals",
+      "title": "ValheimVisuals",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
+      "icon": "https://cdn.hexium.gg/upload/1593/icon.png?16120",
+      "emoji": "🎨",
+      "steps": [
+        {
+          "label": "1.4.8 → 1.4.9",
+          "bullets": [
+            "Contact shadows and sun effects now run only for your camera, not PortalPreview views.",
+            "Fixed grass radius ownership between mods, leaving it to HD Terrain-style mods when present."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}

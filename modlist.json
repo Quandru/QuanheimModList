@@ -3,33 +3,21 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-09T20:33:20.981003Z"
+    "updatedAt": "2026-11-10T00:10:32.549166Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-09-2033.md",
-    "profileUpdatedAt": "2026-11-09T20:33:20.981003Z",
-    "previousProfileUpdatedAt": "2026-11-08T11:12:38.969542Z",
+    "file": "patchnotes/2026-11-10-0010.md",
+    "profileUpdatedAt": "2026-11-10T00:10:32.549166Z",
+    "previousProfileUpdatedAt": "2026-11-09T20:33:20.981003Z",
     "counts": {
-      "updated": 5,
-      "added": 1,
-      "removed": 1
+      "updated": 5
     },
-    "removed": [
-      {
-        "name": "Geda_Giminei-FixAchievements",
-        "version": "1.0.2"
-      }
-    ],
+    "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1569450545347821588",
-      "messageIds": [
-        "1569450545347821588",
-        "1569450565375631470"
-      ],
-      "postedAt": "2026-11-09T20:36:14+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-09-2033.discord.json"
+    "cardsFile": "patchnotes/2026-11-10-0010.discord.json"
   },
   "mods": [
     {
@@ -128,12 +116,7 @@
       "version": "1.0.9",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Azumatt/Unshamed",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "1.0.9"
-      }
+      "url": "https://valheim.hexium.gg/mods/Azumatt/Unshamed"
     },
     {
       "name": "Azumatt-WardIsLove",
@@ -235,38 +218,38 @@
     },
     {
       "name": "Ivvty-FarLands",
-      "version": "1.3.0",
+      "version": "1.4.1",
       "enabled": true,
       "source": "hexium",
       "url": "https://valheim.hexium.gg/mods/Ivvty/FarLands",
       "lastPatch": {
         "change": "updated",
-        "from": "1.2.0",
-        "to": "1.3.0"
+        "from": "1.3.0",
+        "to": "1.4.1"
       }
     },
     {
       "name": "Ivvty-SteadyFrame",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "enabled": true,
       "source": "hexium",
       "url": "https://valheim.hexium.gg/mods/Ivvty/SteadyFrame",
       "lastPatch": {
         "change": "updated",
-        "from": "1.2.2",
-        "to": "1.3.0"
+        "from": "1.3.0",
+        "to": "1.3.1"
       }
     },
     {
       "name": "Ivvty-ValheimVisuals",
-      "version": "1.4.8",
+      "version": "1.4.9",
       "enabled": true,
       "source": "hexium",
       "url": "https://valheim.hexium.gg/mods/Ivvty/ValheimVisuals",
       "lastPatch": {
         "change": "updated",
-        "from": "1.4.7",
-        "to": "1.4.8"
+        "from": "1.4.8",
+        "to": "1.4.9"
       }
     },
     {
@@ -341,10 +324,15 @@
     },
     {
       "name": "OdinPlus-OdinArchitect",
-      "version": "1.9.4",
+      "version": "1.9.5",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinArchitect"
+      "url": "https://valheim.hexium.gg/mods/OdinPlus/OdinArchitect",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.9.4",
+        "to": "1.9.5"
+      }
     },
     {
       "name": "OdinPlus-OdinBanners",
@@ -379,12 +367,7 @@
       "version": "1.7.3",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/potto007/OttoFuel/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.7.2",
-        "to": "1.7.3"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/potto007/OttoFuel/"
     },
     {
       "name": "Qua8ion-LetMeTameYouServerFix",
@@ -402,14 +385,14 @@
     },
     {
       "name": "Quandru-QuanChunkLoader",
-      "version": "1.1.3",
+      "version": "1.2.0",
       "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChunkLoader/",
+      "source": "hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanChunkLoader",
       "lastPatch": {
         "change": "updated",
-        "from": "1.1.2",
-        "to": "1.1.3"
+        "from": "1.1.3",
+        "to": "1.2.0"
       }
     },
     {
