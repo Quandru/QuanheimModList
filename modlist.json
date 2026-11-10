@@ -14,8 +14,12 @@
     },
     "removed": [],
     "discord": {
-      "posted": false,
-      "messageId": null
+      "posted": true,
+      "messageId": "1569505818997563474",
+      "messageIds": [
+        "1569505818997563474"
+      ],
+      "postedAt": "2026-11-10T00:15:48+00:00"
     },
     "cardsFile": "patchnotes/2026-11-10-0010.discord.json"
   },
