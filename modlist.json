@@ -3,7 +3,7 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-14T15:22:25.060955Z"
+    "updatedAt": "2026-11-14T16:47:02.567456Z"
   },
   "lastPatch": {
     "file": "patchnotes/2026-11-14-1522.md",
@@ -386,12 +386,7 @@
       "version": "1.5.0",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.4.0",
-        "to": "1.5.0"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/"
     },
     {
       "name": "R3ddTeamRules-Warmth",
