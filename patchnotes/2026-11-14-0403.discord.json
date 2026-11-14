@@ -1,0 +1,63 @@
+{
+  "patchFile": "patchnotes/2026-11-14-0403.md",
+  "profileUpdatedAt": "2026-11-14T04:03:56.529909Z",
+  "totalMods": 74,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 3
+  },
+  "summary": [
+    "☁️ **WeatherOverhaul** makes fair-weather clouds cast lighter shade, adds taller cumulus towers and smooths out the sky.",
+    "🛒 **TeleportCarts** improves cart shortcut diagnostics and destination placement."
+  ],
+  "cards": [
+    {
+      "name": "OdinPlus-TeleportCarts",
+      "title": "TeleportCarts",
+      "change": "updated",
+      "author": "OdinPlus",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/OdinPlus/TeleportCarts/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/OdinPlus-TeleportCarts-0.2.4.png",
+      "emoji": "🛒",
+      "steps": [
+        {
+          "label": "0.2.3 → 0.2.4",
+          "bullets": [
+            "Better cart shortcut diagnostics and destination placement."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ivvty-WeatherOverhaul",
+      "title": "WeatherOverhaul",
+      "change": "updated",
+      "author": "Ivvty",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
+      "icon": "https://cdn.hexium.gg/upload/2864/icon.png?16222",
+      "emoji": "☁️",
+      "steps": [
+        {
+          "label": "1.0.5 → 1.0.6",
+          "bullets": [
+            "Fair-weather clouds no longer darken the ground as much by day; overcast skies are unchanged.",
+            "Some fair-weather cumulus now grow into tall rounded towers, and high thin clouds lose the streaks from the sun.",
+            "Ashlands has only small gaps in the ash clouds instead of large open sky."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": [
+    {
+      "name": "ZenDragon-Zen_ModLib",
+      "title": "Zen ModLib",
+      "url": "https://thunderstore.io/c/valheim/p/ZenDragon/Zen_ModLib/",
+      "label": "1.14.22 → 1.14.23",
+      "line": "Recompiled for Valheim 1.0.21 with updated dependencies"
+    }
+  ]
+}

@@ -3,25 +3,21 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-10T04:34:33.570156Z"
+    "updatedAt": "2026-11-14T04:03:56.529909Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-10-0434.md",
-    "profileUpdatedAt": "2026-11-10T04:34:33.570156Z",
-    "previousProfileUpdatedAt": "2026-11-10T00:10:32.549166Z",
+    "file": "patchnotes/2026-11-14-0403.md",
+    "profileUpdatedAt": "2026-11-14T04:03:56.529909Z",
+    "previousProfileUpdatedAt": "2026-11-10T04:34:33.570156Z",
     "counts": {
-      "updated": 1
+      "updated": 3
     },
     "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1569571192463953993",
-      "messageIds": [
-        "1569571192463953993"
-      ],
-      "postedAt": "2026-11-10T04:35:33+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-10-0434.discord.json"
+    "cardsFile": "patchnotes/2026-11-14-0403.discord.json"
   },
   "mods": [
     {
@@ -243,10 +239,15 @@
     },
     {
       "name": "Ivvty-WeatherOverhaul",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul"
+      "url": "https://valheim.hexium.gg/mods/Ivvty/WeatherOverhaul",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.0.5",
+        "to": "1.0.6"
+      }
     },
     {
       "name": "JereKuusela-Ore_Support",
@@ -334,10 +335,15 @@
     },
     {
       "name": "OdinPlus-TeleportCarts",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/OdinPlus/TeleportCarts/"
+      "url": "https://thunderstore.io/c/valheim/p/OdinPlus/TeleportCarts/",
+      "lastPatch": {
+        "change": "updated",
+        "from": "0.2.3",
+        "to": "0.2.4"
+      }
     },
     {
       "name": "plumga-Clutter",
@@ -365,12 +371,7 @@
       "version": "1.0.1",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChat/",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.0.0",
-        "to": "1.0.1"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChat/"
     },
     {
       "name": "Quandru-QuanChunkLoader",
@@ -528,10 +529,15 @@
     },
     {
       "name": "ZenDragon-Zen_ModLib",
-      "version": "1.14.22",
+      "version": "1.14.23",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/ZenDragon/Zen_ModLib/"
+      "url": "https://thunderstore.io/c/valheim/p/ZenDragon/Zen_ModLib/",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.14.22",
+        "to": "1.14.23"
+      }
     },
     {
       "name": "ZenDragon-ZenItemStands",
