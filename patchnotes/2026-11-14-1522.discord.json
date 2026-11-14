@@ -1,0 +1,36 @@
+{
+  "patchFile": "patchnotes/2026-11-14-1522.md",
+  "profileUpdatedAt": "2026-11-14T15:22:25.060955Z",
+  "totalMods": 74,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 1
+  },
+  "summary": [
+    "🛣️ **QuanPieces** adds new plank wall, triangular floor, shelf edge and item stand pieces."
+  ],
+  "cards": [
+    {
+      "name": "Quandru-QuanPieces",
+      "title": "QuanPieces",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Quandru-QuanPieces-1.5.0.png",
+      "emoji": "🛣️",
+      "steps": [
+        {
+          "label": "1.4.0 → 1.5.0",
+          "bullets": [
+            "New beam-free wood walls in several sizes, including 3 m tall 2x3 and 1x3 walls.",
+            "New triangular wood floors and a bevelled shelf edge for small gaps and neat 1x1 shelf ends.",
+            "New item stands (wall and floor) with only the nub, plus invisible versions that hide the nub while holding an item."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
