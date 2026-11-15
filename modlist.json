@@ -25,8 +25,13 @@
       }
     ],
     "discord": {
-      "posted": false,
-      "messageId": null
+      "posted": true,
+      "messageId": "1571570712349638831",
+      "messageIds": [
+        "1571570712349638831",
+        "1571570718129389731"
+      ],
+      "postedAt": "2026-11-15T17:00:58+00:00"
     },
     "cardsFile": "patchnotes/2026-11-15-1656.discord.json"
   },
