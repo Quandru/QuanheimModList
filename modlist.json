@@ -3,25 +3,32 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-14T16:47:02.567456Z"
+    "updatedAt": "2026-11-15T16:56:28.911938Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-14-1522.md",
-    "profileUpdatedAt": "2026-11-14T15:22:25.060955Z",
-    "previousProfileUpdatedAt": "2026-11-14T04:03:56.529909Z",
+    "file": "patchnotes/2026-11-15-1656.md",
+    "profileUpdatedAt": "2026-11-15T16:56:28.911938Z",
+    "previousProfileUpdatedAt": "2026-11-14T16:47:02.567456Z",
     "counts": {
-      "updated": 1
+      "added": 3,
+      "removed": 2,
+      "disabled": 1
     },
-    "removed": [],
+    "removed": [
+      {
+        "name": "ZenDragon-Zen_ModLib",
+        "version": "1.14.23"
+      },
+      {
+        "name": "ZenDragon-ZenItemStands",
+        "version": "1.1.1"
+      }
+    ],
     "discord": {
-      "posted": true,
-      "messageId": "1571184313154674831",
-      "messageIds": [
-        "1571184313154674831"
-      ],
-      "postedAt": "2026-11-14T15:25:31+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-14-1522.discord.json"
+    "cardsFile": "patchnotes/2026-11-15-1656.discord.json"
   },
   "mods": [
     {
@@ -111,9 +118,14 @@
     {
       "name": "Azumatt-Recycle_N_Reclaim",
       "version": "1.4.5",
-      "enabled": true,
+      "enabled": false,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Azumatt/Recycle_N_Reclaim"
+      "url": "https://valheim.hexium.gg/mods/Azumatt/Recycle_N_Reclaim",
+      "lastPatch": {
+        "change": "disabled",
+        "from": "1.4.5",
+        "to": "1.4.5"
+      }
     },
     {
       "name": "Azumatt-Unshamed",
@@ -298,6 +310,30 @@
       "url": "https://thunderstore.io/c/valheim/p/MilkMediaProductions/ExpertExplorer/"
     },
     {
+      "name": "Morda-ValheimMannequins",
+      "version": "0.3.0",
+      "enabled": true,
+      "source": "thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Morda/ValheimMannequins/",
+      "lastPatch": {
+        "change": "added",
+        "from": null,
+        "to": "0.3.0"
+      }
+    },
+    {
+      "name": "Morda-WorkbenchesPlus",
+      "version": "1.1.1",
+      "enabled": true,
+      "source": "thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Morda/WorkbenchesPlus/",
+      "lastPatch": {
+        "change": "added",
+        "from": null,
+        "to": "1.1.1"
+      }
+    },
+    {
       "name": "MSchmoecker-PressurePlate",
       "version": "0.10.1",
       "enabled": true,
@@ -401,6 +437,18 @@
       "enabled": true,
       "source": "thunderstore",
       "url": "https://thunderstore.io/c/valheim/p/Ross/RossItemDrawers/"
+    },
+    {
+      "name": "RustyMods-BuildableBossStones",
+      "version": "1.1.3",
+      "enabled": true,
+      "source": "thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/RustyMods/BuildableBossStones/",
+      "lastPatch": {
+        "change": "added",
+        "from": null,
+        "to": "1.1.3"
+      }
     },
     {
       "name": "Searica-CameraTweaks",
@@ -520,20 +568,6 @@
       "enabled": true,
       "source": "thunderstore",
       "url": "https://thunderstore.io/c/valheim/p/Vismeneer/MoreMissingPieces/"
-    },
-    {
-      "name": "ZenDragon-Zen_ModLib",
-      "version": "1.14.23",
-      "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/ZenDragon/Zen_ModLib/"
-    },
-    {
-      "name": "ZenDragon-ZenItemStands",
-      "version": "1.1.1",
-      "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/ZenDragon/ZenItemStands/"
     },
     {
       "name": "Zenox-ServerConnect",

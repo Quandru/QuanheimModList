@@ -1,7 +1,7 @@
 {
-  "checkedAt": "2026-11-14T16:50:10+00:00",
-  "status": "config-only",
-  "profileUpdatedAt": "2026-11-14T16:47:02.567456Z",
-  "mods": 74,
-  "runUrl": "https://github.com/Quandru/QuanheimModList/actions/runs/43617749953"
+  "checkedAt": "2026-11-15T17:00:14+00:00",
+  "status": "mods-changed",
+  "profileUpdatedAt": "2026-11-15T16:56:28.911938Z",
+  "mods": 75,
+  "runUrl": "https://github.com/Quandru/QuanheimModList/actions/runs/43738578789"
 }

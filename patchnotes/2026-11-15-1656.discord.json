@@ -1,0 +1,129 @@
+{
+  "patchFile": "patchnotes/2026-11-15-1656.md",
+  "profileUpdatedAt": "2026-11-15T16:56:28.911938Z",
+  "totalMods": 75,
+  "counts": {
+    "new": 3,
+    "removed": 3,
+    "updated": 0
+  },
+  "summary": [
+    "🧍 New mod **ValheimMannequins** adds player-shaped mannequins you can dress, pose, name and swap gear sets on.",
+    "🔨 New mod **WorkbenchesPlus** adds sorted and searchable build menus, a Dismantle tab and a longer build range.",
+    "🪦 New mod **BuildableBossStones** lets you build boss stones.",
+    "🗑️ **Zen ModLib** and **ZenItemStands** were removed, and **Recycle N Reclaim** was turned off."
+  ],
+  "cards": [
+    {
+      "name": "RustyMods-BuildableBossStones",
+      "title": "BuildableBossStones",
+      "change": "added",
+      "author": "RustyMods",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/RustyMods/BuildableBossStones/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/RustyMods-BuildableBossStones-1.1.3.png",
+      "emoji": "🪦",
+      "steps": [
+        {
+          "label": "new · 1.1.3",
+          "bullets": [
+            "Adds boss stones you can build yourself."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Morda-ValheimMannequins",
+      "title": "ValheimMannequins",
+      "change": "added",
+      "author": "Morda",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Morda/ValheimMannequins/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Morda-ValheimMannequins-0.3.0.png",
+      "emoji": "🧍",
+      "steps": [
+        {
+          "label": "new · 0.3.0",
+          "bullets": [
+            "Adds player-shaped mannequins you can dress with real gear, pose, name and give several gear sets.",
+            "Swap a set with your own gear using Alt+number."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Morda-WorkbenchesPlus",
+      "title": "WorkbenchesPlus",
+      "change": "added",
+      "author": "Morda",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/Morda/WorkbenchesPlus/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/Morda-WorkbenchesPlus-1.1.1.png",
+      "emoji": "🔨",
+      "steps": [
+        {
+          "label": "new · 1.1.1",
+          "bullets": [
+            "Adds sorted build menus with search and categories, plus a Dismantle tab.",
+            "Shift+E extends your build range up to 200 m."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ZenDragon-Zen_ModLib",
+      "title": "Zen ModLib",
+      "change": "removed",
+      "author": "ZenDragon",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/ZenDragon/Zen_ModLib/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/ZenDragon-Zen_ModLib-1.14.23.png",
+      "emoji": "📚",
+      "steps": [
+        {
+          "label": "removed · was 1.14.23",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ZenDragon-ZenItemStands",
+      "title": "ZenItemStands",
+      "change": "removed",
+      "author": "ZenDragon",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/ZenDragon/ZenItemStands/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/ZenDragon-ZenItemStands-1.1.1.png",
+      "emoji": "🖼️",
+      "steps": [
+        {
+          "label": "removed · was 1.1.1",
+          "bullets": [
+            "Removed from the pack."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Azumatt-Recycle_N_Reclaim",
+      "title": "Recycle N Reclaim",
+      "change": "disabled",
+      "author": "Azumatt",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Azumatt/Recycle_N_Reclaim",
+      "icon": "https://cdn.hexium.gg/upload/226/icon.png?3930",
+      "emoji": "♻️",
+      "steps": [
+        {
+          "label": "disabled · 1.4.5",
+          "bullets": [
+            "Turned off in the pack, but still installed."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}
