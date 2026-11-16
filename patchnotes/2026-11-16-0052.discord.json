@@ -1,0 +1,72 @@
+{
+  "patchFile": "patchnotes/2026-11-16-0052.md",
+  "profileUpdatedAt": "2026-11-16T00:52:38.965603Z",
+  "totalMods": 76,
+  "counts": {
+    "new": 1,
+    "removed": 0,
+    "updated": 2
+  },
+  "summary": [
+    "🐾 **BetterTames** is new: tames follow you through portals and into dungeons, level up from kills and can be fed from chests.",
+    "💬 **QuanChat** gets a new admin-only server settings section as groundwork for future settings."
+  ],
+  "cards": [
+    {
+      "name": "Quandru-QuanChat",
+      "title": "QuanChat",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanChat",
+      "icon": "https://cdn.hexium.gg/upload/3071/icon.png?17119",
+      "emoji": "💬",
+      "steps": [
+        {
+          "label": "1.0.1 → 1.0.2",
+          "bullets": [
+            "New admin-only server settings section with a placeholder setting that changes nothing yet.",
+            "Future settings that affect everyone, like chat range, will live here."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xtavim-BetterTames",
+      "title": "BetterTames",
+      "change": "added",
+      "author": "xtavim",
+      "source": "Thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/xtavim/BetterTames/",
+      "icon": "https://ccdn.thunderstore.io/live/repository/icons/xtavim-BetterTames-0.9.0.png",
+      "emoji": "🐾",
+      "steps": [
+        {
+          "label": "new · 0.9.0",
+          "bullets": [
+            "Taming overhaul: pet protection, tames that follow you through portals and into dungeons, follow/stay keys, levelling from kills and feeding from chests."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quandru-QuanPieces",
+      "title": "QuanPieces",
+      "change": "source-changed",
+      "author": "Quandru",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanPieces",
+      "icon": "https://cdn.hexium.gg/upload/3074/icon.png?16863",
+      "emoji": "🛣️",
+      "steps": [
+        {
+          "label": "1.5.0 · Thunderstore → Hexium",
+          "bullets": [
+            "Same version, now installed from a different site. No gameplay change."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}

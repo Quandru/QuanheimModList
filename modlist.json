@@ -3,37 +3,23 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-15T17:03:09.272782Z"
+    "updatedAt": "2026-11-16T00:52:38.965603Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-15-1656.md",
-    "profileUpdatedAt": "2026-11-15T16:56:28.911938Z",
-    "previousProfileUpdatedAt": "2026-11-14T16:47:02.567456Z",
+    "file": "patchnotes/2026-11-16-0052.md",
+    "profileUpdatedAt": "2026-11-16T00:52:38.965603Z",
+    "previousProfileUpdatedAt": "2026-11-15T17:03:09.272782Z",
     "counts": {
-      "added": 3,
-      "removed": 2,
-      "disabled": 1
+      "updated": 1,
+      "added": 1,
+      "source-changed": 1
     },
-    "removed": [
-      {
-        "name": "ZenDragon-Zen_ModLib",
-        "version": "1.14.23"
-      },
-      {
-        "name": "ZenDragon-ZenItemStands",
-        "version": "1.1.1"
-      }
-    ],
+    "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1571570712349638831",
-      "messageIds": [
-        "1571570712349638831",
-        "1571570718129389731"
-      ],
-      "postedAt": "2026-11-15T17:00:58+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-15-1656.discord.json"
+    "cardsFile": "patchnotes/2026-11-16-0052.discord.json"
   },
   "mods": [
     {
@@ -388,10 +374,15 @@
     },
     {
       "name": "Quandru-QuanChat",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanChat/"
+      "source": "hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanChat",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.0.1",
+        "to": "1.0.2"
+      }
     },
     {
       "name": "Quandru-QuanChunkLoader",
@@ -411,8 +402,13 @@
       "name": "Quandru-QuanPieces",
       "version": "1.5.0",
       "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanPieces/"
+      "source": "hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanPieces",
+      "lastPatch": {
+        "change": "source-changed",
+        "from": "1.5.0",
+        "to": "1.5.0"
+      }
     },
     {
       "name": "R3ddTeamRules-Warmth",
@@ -553,6 +549,18 @@
       "enabled": true,
       "source": "thunderstore",
       "url": "https://thunderstore.io/c/valheim/p/Vismeneer/MoreMissingPieces/"
+    },
+    {
+      "name": "xtavim-BetterTames",
+      "version": "0.9.0",
+      "enabled": true,
+      "source": "thunderstore",
+      "url": "https://thunderstore.io/c/valheim/p/xtavim/BetterTames/",
+      "lastPatch": {
+        "change": "added",
+        "from": null,
+        "to": "0.9.0"
+      }
     },
     {
       "name": "Zenox-ServerConnect",
