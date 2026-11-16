@@ -64,8 +64,10 @@ jobs:
           status=$(python3 -c 'import json; print(json.load(open(".patchnotes/check.json"))["status"])')
           echo "status=$status" >> "$GITHUB_OUTPUT"
 
+          # config-only goes through prepare the same way: if prepare ever finds a change the meta can't show,
+          # it gets the full patch path instead of a half-written patch. Usually it writes no patch.
           case "$status" in
-            mods-changed|no-baseline)
+            mods-changed|no-baseline|config-only)
               args=""
               [ "$status" = no-baseline ] && args="--backfill-days 3"
               if ! python3 tools/patchnotes.py prepare $args > .patchnotes/prepare.json; then
@@ -81,9 +83,6 @@ jobs:
                 echo "file=$file" >> "$GITHUB_OUTPUT"
                 echo "cards=$cards" >> "$GITHUB_OUTPUT"
               fi
-              ;;
-            config-only)
-              python3 tools/patchnotes.py prepare > /dev/null || { git checkout -- .; echo "::warning::prepare failed; will retry"; }
               ;;
           esac
 

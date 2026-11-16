@@ -282,7 +282,9 @@ def compute_changes(old_mods, new_snap, sources):
         kind = None
         if b > a: kind = "updated"
         elif b < a: kind = "downgraded"
-        elif prev.get("source") and src and prev["source"] != src: kind = "source-changed"
+        # A mod moving between Thunderstore and Hexium at the same version is not a change for players:
+        # modlist.json records the new source, but it never goes in a patch note or on Discord.
+        # ("source-changed" labels below are kept only so older patches still render.)
         if kind:
             changes.append({"name": name, "change": kind, "from": prev["version"], "to": cur["version"],
                             "source": src, "fromSource": prev.get("source")})
