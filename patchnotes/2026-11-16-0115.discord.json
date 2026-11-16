@@ -1,0 +1,36 @@
+{
+  "patchFile": "patchnotes/2026-11-16-0115.md",
+  "profileUpdatedAt": "2026-11-16T01:15:24.720357Z",
+  "totalMods": 76,
+  "counts": {
+    "new": 0,
+    "removed": 0,
+    "updated": 1
+  },
+  "summary": [
+    "💡 **QuanDupeLightsources** no longer installs NoSmokeStayLit and QuanPieces automatically; install them yourself if you want their light duplicates."
+  ],
+  "cards": [
+    {
+      "name": "Quandru-QuanDupeLightsources",
+      "title": "QuanDupeLightsources",
+      "change": "updated",
+      "author": "Quandru",
+      "source": "Hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanDupeLightsources",
+      "icon": "https://cdn.hexium.gg/upload/3182/icon.png?17125",
+      "emoji": "💡",
+      "steps": [
+        {
+          "label": "1.1.0 → 1.1.1",
+          "bullets": [
+            "NoSmokeStayLit and QuanPieces are no longer required dependencies, so install them yourself; the mod still loads after them when present.",
+            "Vanilla duplicates are always added, and street light duplicates are added whenever QuanPieces is installed.",
+            "Now available on Hexium too."
+          ]
+        }
+      ]
+    }
+  ],
+  "framework": []
+}

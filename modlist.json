@@ -3,27 +3,21 @@
     "code": "ZKG7UK",
     "name": "Default",
     "community": "valheim",
-    "updatedAt": "2026-11-16T00:52:38.965603Z"
+    "updatedAt": "2026-11-16T01:15:24.720357Z"
   },
   "lastPatch": {
-    "file": "patchnotes/2026-11-16-0052.md",
-    "profileUpdatedAt": "2026-11-16T00:52:38.965603Z",
-    "previousProfileUpdatedAt": "2026-11-15T17:03:09.272782Z",
+    "file": "patchnotes/2026-11-16-0115.md",
+    "profileUpdatedAt": "2026-11-16T01:15:24.720357Z",
+    "previousProfileUpdatedAt": "2026-11-16T00:52:38.965603Z",
     "counts": {
-      "updated": 1,
-      "added": 1,
-      "source-changed": 1
+      "updated": 1
     },
     "removed": [],
     "discord": {
-      "posted": true,
-      "messageId": "1571690152533958839",
-      "messageIds": [
-        "1571690152533958839"
-      ],
-      "postedAt": "2026-11-16T00:55:34+00:00"
+      "posted": false,
+      "messageId": null
     },
-    "cardsFile": "patchnotes/2026-11-16-0052.discord.json"
+    "cardsFile": "patchnotes/2026-11-16-0115.discord.json"
   },
   "mods": [
     {
@@ -381,12 +375,7 @@
       "version": "1.0.2",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Quandru/QuanChat",
-      "lastPatch": {
-        "change": "updated",
-        "from": "1.0.1",
-        "to": "1.0.2"
-      }
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanChat"
     },
     {
       "name": "Quandru-QuanChunkLoader",
@@ -397,22 +386,22 @@
     },
     {
       "name": "Quandru-QuanDupeLightsources",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "enabled": true,
-      "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/Quandru/QuanDupeLightsources/"
+      "source": "hexium",
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanDupeLightsources",
+      "lastPatch": {
+        "change": "updated",
+        "from": "1.1.0",
+        "to": "1.1.1"
+      }
     },
     {
       "name": "Quandru-QuanPieces",
       "version": "1.5.0",
       "enabled": true,
       "source": "hexium",
-      "url": "https://valheim.hexium.gg/mods/Quandru/QuanPieces",
-      "lastPatch": {
-        "change": "source-changed",
-        "from": "1.5.0",
-        "to": "1.5.0"
-      }
+      "url": "https://valheim.hexium.gg/mods/Quandru/QuanPieces"
     },
     {
       "name": "R3ddTeamRules-Warmth",
@@ -559,12 +548,7 @@
       "version": "0.9.0",
       "enabled": true,
       "source": "thunderstore",
-      "url": "https://thunderstore.io/c/valheim/p/xtavim/BetterTames/",
-      "lastPatch": {
-        "change": "added",
-        "from": null,
-        "to": "0.9.0"
-      }
+      "url": "https://thunderstore.io/c/valheim/p/xtavim/BetterTames/"
     },
     {
       "name": "Zenox-ServerConnect",
